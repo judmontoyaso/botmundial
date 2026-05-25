@@ -1,0 +1,832 @@
+[
+  {
+    "name": "Mexico",
+    "code": "MEX",
+    "group_letter": "A",
+    "fifa_ranking": 15,
+    "confederation": "CONCACAF",
+    "flag_emoji": "🇲🇽",
+    "stats": {
+      "goals_scored_avg": 1.5,
+      "goals_conceded_avg": 1.0,
+      "wins_last_10": 6,
+      "draws_last_10": 4,
+      "losses_last_10": 0,
+      "world_cup_appearances": 17,
+      "best_finish": "Quarterfinals"
+    },
+    "api_id": 16,
+    "logo_url": "https://media.api-sports.io/football/teams/16.png"
+  },
+  {
+    "name": "South Korea",
+    "code": "KOR",
+    "group_letter": "A",
+    "fifa_ranking": 22,
+    "confederation": "AFC",
+    "flag_emoji": "🇰🇷",
+    "stats": {
+      "goals_scored_avg": 1.3,
+      "goals_conceded_avg": 1.0,
+      "wins_last_10": 4,
+      "draws_last_10": 3,
+      "losses_last_10": 3,
+      "world_cup_appearances": 11,
+      "best_finish": "Semifinals"
+    },
+    "api_id": 17,
+    "logo_url": "https://media.api-sports.io/football/teams/17.png"
+  },
+  {
+    "name": "South Africa",
+    "code": "RSA",
+    "group_letter": "A",
+    "fifa_ranking": 58,
+    "confederation": "CAF",
+    "flag_emoji": "🇿🇦",
+    "stats": {
+      "goals_scored_avg": 1.1,
+      "goals_conceded_avg": 1.2,
+      "wins_last_10": 4,
+      "draws_last_10": 2,
+      "losses_last_10": 4,
+      "world_cup_appearances": 3,
+      "best_finish": "Group Stage"
+    },
+    "api_id": 1531,
+    "logo_url": "https://media.api-sports.io/football/teams/1531.png"
+  },
+  {
+    "name": "Czechia",
+    "code": "CZE",
+    "group_letter": "A",
+    "fifa_ranking": 36,
+    "confederation": "UEFA",
+    "flag_emoji": "🇨🇿",
+    "stats": {
+      "goals_scored_avg": 1.2,
+      "goals_conceded_avg": 1.1,
+      "wins_last_10": 3,
+      "draws_last_10": 3,
+      "losses_last_10": 4,
+      "world_cup_appearances": 1,
+      "best_finish": "Group Stage"
+    }
+  },
+  {
+    "name": "Canada",
+    "code": "CAN",
+    "group_letter": "B",
+    "fifa_ranking": 49,
+    "confederation": "CONCACAF",
+    "flag_emoji": "🇨🇦",
+    "stats": {
+      "goals_scored_avg": 1.2,
+      "goals_conceded_avg": 1.3,
+      "wins_last_10": 6,
+      "draws_last_10": 1,
+      "losses_last_10": 3,
+      "world_cup_appearances": 2,
+      "best_finish": "Group Stage"
+    },
+    "api_id": 5529,
+    "logo_url": "https://media.api-sports.io/football/teams/5529.png"
+  },
+  {
+    "name": "Switzerland",
+    "code": "SUI",
+    "group_letter": "B",
+    "fifa_ranking": 19,
+    "confederation": "UEFA",
+    "flag_emoji": "🇨🇭",
+    "stats": {
+      "goals_scored_avg": 1.4,
+      "goals_conceded_avg": 0.9,
+      "wins_last_10": 5,
+      "draws_last_10": 3,
+      "losses_last_10": 2,
+      "world_cup_appearances": 12,
+      "best_finish": "Quarterfinals"
+    },
+    "api_id": 15,
+    "logo_url": "https://media.api-sports.io/football/teams/15.png"
+  },
+  {
+    "name": "Qatar",
+    "code": "QAT",
+    "group_letter": "B",
+    "fifa_ranking": 34,
+    "confederation": "AFC",
+    "flag_emoji": "🇶🇦",
+    "stats": {
+      "goals_scored_avg": 1.2,
+      "goals_conceded_avg": 1.5,
+      "wins_last_10": 5,
+      "draws_last_10": 1,
+      "losses_last_10": 4,
+      "world_cup_appearances": 1,
+      "best_finish": "Group Stage"
+    },
+    "api_id": 1569,
+    "logo_url": "https://media.api-sports.io/football/teams/1569.png"
+  },
+  {
+    "name": "Bosnia-Herzegovina",
+    "code": "BIH",
+    "group_letter": "B",
+    "fifa_ranking": 71,
+    "confederation": "UEFA",
+    "flag_emoji": "🇧🇦",
+    "stats": {
+      "goals_scored_avg": 1.0,
+      "goals_conceded_avg": 1.4,
+      "wins_last_10": 6,
+      "draws_last_10": 1,
+      "losses_last_10": 3,
+      "world_cup_appearances": 1,
+      "best_finish": "Group Stage"
+    }
+  },
+  {
+    "name": "Brazil",
+    "code": "BRA",
+    "group_letter": "C",
+    "fifa_ranking": 5,
+    "confederation": "CONMEBOL",
+    "flag_emoji": "🇧🇷",
+    "stats": {
+      "goals_scored_avg": 2.0,
+      "goals_conceded_avg": 0.7,
+      "wins_last_10": 7,
+      "draws_last_10": 2,
+      "losses_last_10": 1,
+      "world_cup_appearances": 22,
+      "best_finish": "Winner (5)"
+    },
+    "api_id": 6,
+    "logo_url": "https://media.api-sports.io/football/teams/6.png"
+  },
+  {
+    "name": "Morocco",
+    "code": "MAR",
+    "group_letter": "C",
+    "fifa_ranking": 12,
+    "confederation": "CAF",
+    "flag_emoji": "🇲🇦",
+    "stats": {
+      "goals_scored_avg": 1.6,
+      "goals_conceded_avg": 0.8,
+      "wins_last_10": 6,
+      "draws_last_10": 2,
+      "losses_last_10": 2,
+      "world_cup_appearances": 6,
+      "best_finish": "Semifinals"
+    }
+  },
+  {
+    "name": "Scotland",
+    "code": "SCO",
+    "group_letter": "C",
+    "fifa_ranking": 39,
+    "confederation": "UEFA",
+    "flag_emoji": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+    "stats": {
+      "goals_scored_avg": 1.1,
+      "goals_conceded_avg": 1.3,
+      "wins_last_10": 7,
+      "draws_last_10": 2,
+      "losses_last_10": 1,
+      "world_cup_appearances": 8,
+      "best_finish": "Group Stage"
+    }
+  },
+  {
+    "name": "Haiti",
+    "code": "HAI",
+    "group_letter": "C",
+    "fifa_ranking": 90,
+    "confederation": "CONCACAF",
+    "flag_emoji": "🇭🇹",
+    "stats": {
+      "goals_scored_avg": 0.9,
+      "goals_conceded_avg": 1.8,
+      "wins_last_10": 3,
+      "draws_last_10": 3,
+      "losses_last_10": 4,
+      "world_cup_appearances": 1,
+      "best_finish": "Group Stage"
+    }
+  },
+  {
+    "name": "United States",
+    "code": "USA",
+    "group_letter": "D",
+    "fifa_ranking": 11,
+    "confederation": "CONCACAF",
+    "flag_emoji": "🇺🇸",
+    "stats": {
+      "goals_scored_avg": 1.6,
+      "goals_conceded_avg": 0.9,
+      "wins_last_10": 5,
+      "draws_last_10": 3,
+      "losses_last_10": 2,
+      "world_cup_appearances": 11,
+      "best_finish": "Semifinals"
+    }
+  },
+  {
+    "name": "Paraguay",
+    "code": "PAR",
+    "group_letter": "D",
+    "fifa_ranking": 56,
+    "confederation": "CONMEBOL",
+    "flag_emoji": "🇵🇾",
+    "stats": {
+      "goals_scored_avg": 1.0,
+      "goals_conceded_avg": 1.1,
+      "wins_last_10": 3,
+      "draws_last_10": 1,
+      "losses_last_10": 6,
+      "world_cup_appearances": 8,
+      "best_finish": "Quarterfinals"
+    }
+  },
+  {
+    "name": "Australia",
+    "code": "AUS",
+    "group_letter": "D",
+    "fifa_ranking": 24,
+    "confederation": "AFC",
+    "flag_emoji": "🇦🇺",
+    "stats": {
+      "goals_scored_avg": 1.3,
+      "goals_conceded_avg": 1.1,
+      "wins_last_10": 4,
+      "draws_last_10": 4,
+      "losses_last_10": 2,
+      "world_cup_appearances": 6,
+      "best_finish": "Round of 16"
+    }
+  },
+  {
+    "name": "Turkiye",
+    "code": "TUR",
+    "group_letter": "D",
+    "fifa_ranking": 40,
+    "confederation": "UEFA",
+    "flag_emoji": "🇹🇷",
+    "stats": {
+      "goals_scored_avg": 1.4,
+      "goals_conceded_avg": 1.2,
+      "wins_last_10": 7,
+      "draws_last_10": 3,
+      "losses_last_10": 0,
+      "world_cup_appearances": 2,
+      "best_finish": "3rd Place"
+    }
+  },
+  {
+    "name": "Germany",
+    "code": "GER",
+    "group_letter": "E",
+    "fifa_ranking": 16,
+    "confederation": "UEFA",
+    "flag_emoji": "🇩🇪",
+    "stats": {
+      "goals_scored_avg": 1.8,
+      "goals_conceded_avg": 1.0,
+      "wins_last_10": 6,
+      "draws_last_10": 3,
+      "losses_last_10": 1,
+      "world_cup_appearances": 20,
+      "best_finish": "Winner (4)"
+    }
+  },
+  {
+    "name": "Ecuador",
+    "code": "ECU",
+    "group_letter": "E",
+    "fifa_ranking": 31,
+    "confederation": "CONMEBOL",
+    "flag_emoji": "🇪🇨",
+    "stats": {
+      "goals_scored_avg": 1.2,
+      "goals_conceded_avg": 1.0,
+      "wins_last_10": 5,
+      "draws_last_10": 4,
+      "losses_last_10": 1,
+      "world_cup_appearances": 4,
+      "best_finish": "Round of 16"
+    }
+  },
+  {
+    "name": "Ivory Coast",
+    "code": "CIV",
+    "group_letter": "E",
+    "fifa_ranking": 38,
+    "confederation": "CAF",
+    "flag_emoji": "🇨🇮",
+    "stats": {
+      "goals_scored_avg": 1.4,
+      "goals_conceded_avg": 1.1,
+      "wins_last_10": 5,
+      "draws_last_10": 1,
+      "losses_last_10": 4,
+      "world_cup_appearances": 3,
+      "best_finish": "Group Stage"
+    }
+  },
+  {
+    "name": "Curaçao",
+    "code": "CUW",
+    "group_letter": "E",
+    "fifa_ranking": 91,
+    "confederation": "CONCACAF",
+    "flag_emoji": "🇨🇼",
+    "stats": {
+      "goals_scored_avg": 0.8,
+      "goals_conceded_avg": 1.6,
+      "wins_last_10": 6,
+      "draws_last_10": 3,
+      "losses_last_10": 1,
+      "world_cup_appearances": 0,
+      "best_finish": "Debut"
+    }
+  },
+  {
+    "name": "Netherlands",
+    "code": "NED",
+    "group_letter": "F",
+    "fifa_ranking": 6,
+    "confederation": "UEFA",
+    "flag_emoji": "🇳🇱",
+    "stats": {
+      "goals_scored_avg": 1.7,
+      "goals_conceded_avg": 0.8,
+      "wins_last_10": 6,
+      "draws_last_10": 2,
+      "losses_last_10": 2,
+      "world_cup_appearances": 11,
+      "best_finish": "Runner-up (3)"
+    }
+  },
+  {
+    "name": "Japan",
+    "code": "JPN",
+    "group_letter": "F",
+    "fifa_ranking": 18,
+    "confederation": "AFC",
+    "flag_emoji": "🇯🇵",
+    "stats": {
+      "goals_scored_avg": 1.5,
+      "goals_conceded_avg": 0.9,
+      "wins_last_10": 7,
+      "draws_last_10": 1,
+      "losses_last_10": 2,
+      "world_cup_appearances": 7,
+      "best_finish": "Round of 16"
+    }
+  },
+  {
+    "name": "Tunisia",
+    "code": "TUN",
+    "group_letter": "F",
+    "fifa_ranking": 41,
+    "confederation": "CAF",
+    "flag_emoji": "🇹🇳",
+    "stats": {
+      "goals_scored_avg": 1.0,
+      "goals_conceded_avg": 1.2,
+      "wins_last_10": 5,
+      "draws_last_10": 3,
+      "losses_last_10": 2,
+      "world_cup_appearances": 6,
+      "best_finish": "Group Stage"
+    }
+  },
+  {
+    "name": "Sweden",
+    "code": "SWE",
+    "group_letter": "F",
+    "fifa_ranking": 26,
+    "confederation": "UEFA",
+    "flag_emoji": "🇸🇪",
+    "stats": {
+      "goals_scored_avg": 1.5,
+      "goals_conceded_avg": 1.0,
+      "wins_last_10": 6,
+      "draws_last_10": 1,
+      "losses_last_10": 3,
+      "world_cup_appearances": 12,
+      "best_finish": "Runner-up"
+    }
+  },
+  {
+    "name": "Belgium",
+    "code": "BEL",
+    "group_letter": "G",
+    "fifa_ranking": 3,
+    "confederation": "UEFA",
+    "flag_emoji": "🇧🇪",
+    "stats": {
+      "goals_scored_avg": 1.8,
+      "goals_conceded_avg": 0.8,
+      "wins_last_10": 5,
+      "draws_last_10": 2,
+      "losses_last_10": 3,
+      "world_cup_appearances": 14,
+      "best_finish": "3rd Place"
+    }
+  },
+  {
+    "name": "Iran",
+    "code": "IRN",
+    "group_letter": "G",
+    "fifa_ranking": 20,
+    "confederation": "AFC",
+    "flag_emoji": "🇮🇷",
+    "stats": {
+      "goals_scored_avg": 1.3,
+      "goals_conceded_avg": 1.0,
+      "wins_last_10": 3,
+      "draws_last_10": 2,
+      "losses_last_10": 5,
+      "world_cup_appearances": 6,
+      "best_finish": "Group Stage"
+    }
+  },
+  {
+    "name": "Egypt",
+    "code": "EGY",
+    "group_letter": "G",
+    "fifa_ranking": 37,
+    "confederation": "CAF",
+    "flag_emoji": "🇪🇬",
+    "stats": {
+      "goals_scored_avg": 1.2,
+      "goals_conceded_avg": 1.1,
+      "wins_last_10": 7,
+      "draws_last_10": 3,
+      "losses_last_10": 0,
+      "world_cup_appearances": 3,
+      "best_finish": "Group Stage"
+    }
+  },
+  {
+    "name": "New Zealand",
+    "code": "NZL",
+    "group_letter": "G",
+    "fifa_ranking": 104,
+    "confederation": "OFC",
+    "flag_emoji": "🇳🇿",
+    "stats": {
+      "goals_scored_avg": 0.9,
+      "goals_conceded_avg": 1.5,
+      "wins_last_10": 3,
+      "draws_last_10": 3,
+      "losses_last_10": 4,
+      "world_cup_appearances": 2,
+      "best_finish": "Group Stage"
+    }
+  },
+  {
+    "name": "Spain",
+    "code": "ESP",
+    "group_letter": "H",
+    "fifa_ranking": 8,
+    "confederation": "UEFA",
+    "flag_emoji": "🇪🇸",
+    "stats": {
+      "goals_scored_avg": 1.9,
+      "goals_conceded_avg": 0.7,
+      "wins_last_10": 6,
+      "draws_last_10": 3,
+      "losses_last_10": 1,
+      "world_cup_appearances": 16,
+      "best_finish": "Winner (1)"
+    }
+  },
+  {
+    "name": "Uruguay",
+    "code": "URU",
+    "group_letter": "H",
+    "fifa_ranking": 15,
+    "confederation": "CONMEBOL",
+    "flag_emoji": "🇺🇾",
+    "stats": {
+      "goals_scored_avg": 1.5,
+      "goals_conceded_avg": 0.9,
+      "wins_last_10": 4,
+      "draws_last_10": 4,
+      "losses_last_10": 2,
+      "world_cup_appearances": 14,
+      "best_finish": "Winner (2)"
+    }
+  },
+  {
+    "name": "Saudi Arabia",
+    "code": "KSA",
+    "group_letter": "H",
+    "fifa_ranking": 53,
+    "confederation": "AFC",
+    "flag_emoji": "🇸🇦",
+    "stats": {
+      "goals_scored_avg": 1.1,
+      "goals_conceded_avg": 1.4,
+      "wins_last_10": 6,
+      "draws_last_10": 4,
+      "losses_last_10": 0,
+      "world_cup_appearances": 6,
+      "best_finish": "Round of 16"
+    }
+  },
+  {
+    "name": "Cape Verde",
+    "code": "CPV",
+    "group_letter": "H",
+    "fifa_ranking": 65,
+    "confederation": "CAF",
+    "flag_emoji": "🇨🇻",
+    "stats": {
+      "goals_scored_avg": 1.0,
+      "goals_conceded_avg": 1.3,
+      "wins_last_10": 6,
+      "draws_last_10": 1,
+      "losses_last_10": 3,
+      "world_cup_appearances": 0,
+      "best_finish": "Debut"
+    }
+  },
+  {
+    "name": "France",
+    "code": "FRA",
+    "group_letter": "I",
+    "fifa_ranking": 2,
+    "confederation": "UEFA",
+    "flag_emoji": "🇫🇷",
+    "stats": {
+      "goals_scored_avg": 2.1,
+      "goals_conceded_avg": 0.7,
+      "wins_last_10": 6,
+      "draws_last_10": 4,
+      "losses_last_10": 0,
+      "world_cup_appearances": 16,
+      "best_finish": "Winner (2)"
+    }
+  },
+  {
+    "name": "Senegal",
+    "code": "SEN",
+    "group_letter": "I",
+    "fifa_ranking": 17,
+    "confederation": "CAF",
+    "flag_emoji": "🇸🇳",
+    "stats": {
+      "goals_scored_avg": 1.4,
+      "goals_conceded_avg": 0.9,
+      "wins_last_10": 5,
+      "draws_last_10": 4,
+      "losses_last_10": 1,
+      "world_cup_appearances": 3,
+      "best_finish": "Quarterfinals"
+    }
+  },
+  {
+    "name": "Norway",
+    "code": "NOR",
+    "group_letter": "I",
+    "fifa_ranking": 46,
+    "confederation": "UEFA",
+    "flag_emoji": "🇳🇴",
+    "stats": {
+      "goals_scored_avg": 1.3,
+      "goals_conceded_avg": 1.1,
+      "wins_last_10": 6,
+      "draws_last_10": 4,
+      "losses_last_10": 0,
+      "world_cup_appearances": 3,
+      "best_finish": "Round of 16"
+    }
+  },
+  {
+    "name": "Iraq",
+    "code": "IRQ",
+    "group_letter": "I",
+    "fifa_ranking": 58,
+    "confederation": "AFC",
+    "flag_emoji": "🇮🇶",
+    "stats": {
+      "goals_scored_avg": 1.0,
+      "goals_conceded_avg": 1.2,
+      "wins_last_10": 3,
+      "draws_last_10": 4,
+      "losses_last_10": 3,
+      "world_cup_appearances": 1,
+      "best_finish": "Group Stage"
+    }
+  },
+  {
+    "name": "Argentina",
+    "code": "ARG",
+    "group_letter": "J",
+    "fifa_ranking": 1,
+    "confederation": "CONMEBOL",
+    "flag_emoji": "🇦🇷",
+    "stats": {
+      "goals_scored_avg": 2.0,
+      "goals_conceded_avg": 0.6,
+      "wins_last_10": 4,
+      "draws_last_10": 2,
+      "losses_last_10": 4,
+      "world_cup_appearances": 18,
+      "best_finish": "Winner (3)"
+    }
+  },
+  {
+    "name": "Austria",
+    "code": "AUT",
+    "group_letter": "J",
+    "fifa_ranking": 25,
+    "confederation": "UEFA",
+    "flag_emoji": "🇦🇹",
+    "stats": {
+      "goals_scored_avg": 1.4,
+      "goals_conceded_avg": 1.1,
+      "wins_last_10": 5,
+      "draws_last_10": 4,
+      "losses_last_10": 1,
+      "world_cup_appearances": 7,
+      "best_finish": "3rd Place"
+    }
+  },
+  {
+    "name": "Algeria",
+    "code": "ALG",
+    "group_letter": "J",
+    "fifa_ranking": 43,
+    "confederation": "CAF",
+    "flag_emoji": "🇩🇿",
+    "stats": {
+      "goals_scored_avg": 1.3,
+      "goals_conceded_avg": 1.0,
+      "wins_last_10": 5,
+      "draws_last_10": 4,
+      "losses_last_10": 1,
+      "world_cup_appearances": 4,
+      "best_finish": "Round of 16"
+    }
+  },
+  {
+    "name": "Jordan",
+    "code": "JOR",
+    "group_letter": "J",
+    "fifa_ranking": 70,
+    "confederation": "AFC",
+    "flag_emoji": "🇯🇴",
+    "stats": {
+      "goals_scored_avg": 1.1,
+      "goals_conceded_avg": 1.4,
+      "wins_last_10": 5,
+      "draws_last_10": 2,
+      "losses_last_10": 3,
+      "world_cup_appearances": 0,
+      "best_finish": "Debut"
+    }
+  },
+  {
+    "name": "Portugal",
+    "code": "POR",
+    "group_letter": "K",
+    "fifa_ranking": 7,
+    "confederation": "UEFA",
+    "flag_emoji": "🇵🇹",
+    "stats": {
+      "goals_scored_avg": 1.9,
+      "goals_conceded_avg": 0.8,
+      "wins_last_10": 6,
+      "draws_last_10": 3,
+      "losses_last_10": 1,
+      "world_cup_appearances": 8,
+      "best_finish": "3rd Place"
+    }
+  },
+  {
+    "name": "Colombia",
+    "code": "COL",
+    "group_letter": "K",
+    "fifa_ranking": 14,
+    "confederation": "CONMEBOL",
+    "flag_emoji": "🇨🇴",
+    "stats": {
+      "goals_scored_avg": 1.5,
+      "goals_conceded_avg": 0.8,
+      "wins_last_10": 5,
+      "draws_last_10": 2,
+      "losses_last_10": 3,
+      "world_cup_appearances": 6,
+      "best_finish": "Quarterfinals"
+    }
+  },
+  {
+    "name": "Uzbekistan",
+    "code": "UZB",
+    "group_letter": "K",
+    "fifa_ranking": 64,
+    "confederation": "AFC",
+    "flag_emoji": "🇺🇿",
+    "stats": {
+      "goals_scored_avg": 1.1,
+      "goals_conceded_avg": 1.3,
+      "wins_last_10": 6,
+      "draws_last_10": 3,
+      "losses_last_10": 1,
+      "world_cup_appearances": 0,
+      "best_finish": "Debut"
+    }
+  },
+  {
+    "name": "DR Congo",
+    "code": "COD",
+    "group_letter": "K",
+    "fifa_ranking": 63,
+    "confederation": "CAF",
+    "flag_emoji": "🇨🇩",
+    "stats": {
+      "goals_scored_avg": 1.0,
+      "goals_conceded_avg": 1.4,
+      "wins_last_10": 4,
+      "draws_last_10": 2,
+      "losses_last_10": 4,
+      "world_cup_appearances": 1,
+      "best_finish": "Group Stage"
+    }
+  },
+  {
+    "name": "England",
+    "code": "ENG",
+    "group_letter": "L",
+    "fifa_ranking": 4,
+    "confederation": "UEFA",
+    "flag_emoji": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+    "stats": {
+      "goals_scored_avg": 1.8,
+      "goals_conceded_avg": 0.7,
+      "wins_last_10": 6,
+      "draws_last_10": 4,
+      "losses_last_10": 0,
+      "world_cup_appearances": 16,
+      "best_finish": "Winner (1)"
+    }
+  },
+  {
+    "name": "Croatia",
+    "code": "CRO",
+    "group_letter": "L",
+    "fifa_ranking": 10,
+    "confederation": "UEFA",
+    "flag_emoji": "🇭🇷",
+    "stats": {
+      "goals_scored_avg": 1.4,
+      "goals_conceded_avg": 0.9,
+      "wins_last_10": 7,
+      "draws_last_10": 3,
+      "losses_last_10": 0,
+      "world_cup_appearances": 6,
+      "best_finish": "Runner-up"
+    }
+  },
+  {
+    "name": "Panama",
+    "code": "PAN",
+    "group_letter": "L",
+    "fifa_ranking": 44,
+    "confederation": "CONCACAF",
+    "flag_emoji": "🇵🇦",
+    "stats": {
+      "goals_scored_avg": 1.1,
+      "goals_conceded_avg": 1.3,
+      "wins_last_10": 5,
+      "draws_last_10": 1,
+      "losses_last_10": 4,
+      "world_cup_appearances": 1,
+      "best_finish": "Group Stage"
+    }
+  },
+  {
+    "name": "Ghana",
+    "code": "GHA",
+    "group_letter": "L",
+    "fifa_ranking": 67,
+    "confederation": "CAF",
+    "flag_emoji": "🇬🇭",
+    "stats": {
+      "goals_scored_avg": 1.2,
+      "goals_conceded_avg": 1.2,
+      "wins_last_10": 5,
+      "draws_last_10": 2,
+      "losses_last_10": 3,
+      "world_cup_appearances": 4,
+      "best_finish": "Quarterfinals"
+    }
+  }
+]
