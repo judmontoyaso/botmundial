@@ -52,7 +52,14 @@ def predict_match(match_id: int) -> Optional[AIPrediction]:
     Generate a combined prediction for a match by merging:
       - Statistical model output (60% weight)
       - LLM output (40% weight)
+    First checks if a cached prediction exists in the database.
     """
+    # 1. Check Supabase database cache first
+    cached = data_service.get_ai_prediction(match_id)
+    if cached is not None:
+        return cached
+
+    # 2. Generate new prediction if not cached
     match = data_service.get_match_by_id(match_id)
     if match is None:
         return None
@@ -113,7 +120,7 @@ def predict_match(match_id: int) -> Optional[AIPrediction]:
     )
     factors = llm.get("factors", [])
 
-    return AIPrediction(
+    pred = AIPrediction(
         match_id=match_id,
         model_used="gemini-1.5-flash + statistical",
         predicted_home_score=max(0, merged_home),
@@ -125,6 +132,11 @@ def predict_match(match_id: int) -> Optional[AIPrediction]:
         analysis_text=analysis_text,
         factors=factors,
     )
+
+    # 3. Cache generated prediction in Supabase database
+    data_service.save_ai_prediction(pred)
+
+    return pred
 
 
 # ---------------------------------------------------------------------------
