@@ -60,19 +60,19 @@ export interface MyPrediction {
 
 export interface AIPrediction {
   match_id: number;
-  home_team_name: string;
-  away_team_name: string;
-  home_flag: string;
-  away_flag: string;
-  predicted_home: number;
-  predicted_away: number;
+  home_team_name?: string;
+  away_team_name?: string;
+  home_flag?: string;
+  away_flag?: string;
+  predicted_home_score: number;
+  predicted_away_score: number;
   home_win_prob: number;
   draw_prob: number;
   away_win_prob: number;
-  confidence: number;
-  analysis: string;
-  factors: AnalysisFactor[];
-  date: string;
+  confidence_score: number;
+  analysis_text: string;
+  factors: string[];
+  date?: string;
 }
 
 export interface AnalysisFactor {

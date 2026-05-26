@@ -134,16 +134,16 @@ export const mockAIPredictions: AIPrediction[] = [
     away_team_name: 'South Korea',
     home_flag: '🇲🇽',
     away_flag: '🇰🇷',
-    predicted_home: 2,
-    predicted_away: 1,
+    predicted_home_score: 2,
+    predicted_away_score: 1,
     home_win_prob: 0.55,
     draw_prob: 0.25,
     away_win_prob: 0.20,
-    confidence: 0.70,
-    analysis: 'Análisis preliminar de DeepSeek: México domina el historial reciente frente a rivales asiáticos, pero la velocidad en transición de Corea del Sur será un desafío. Se espera un partido ajustado donde el mediocampo mexicano haga la diferencia.',
+    confidence_score: 0.70,
+    analysis_text: 'Análisis preliminar de DeepSeek: México domina el historial reciente frente a rivales asiáticos, pero la velocidad en transición de Corea del Sur será un desafío. Se espera un partido ajustado donde el mediocampo mexicano haga la diferencia.',
     factors: [
-      { name: 'Ranking', impact: 'positive', description: 'México #15 vs Corea #22', team: 'MEX' },
-      { name: 'Velocidad', impact: 'negative', description: 'Corea del Sur es letal en contraataque', team: 'KOR' }
+      'México #15 vs Corea #22',
+      'Corea del Sur es letal en contraataque'
     ],
     date: '2026-06-11',
   },
@@ -153,16 +153,16 @@ export const mockAIPredictions: AIPrediction[] = [
     away_team_name: 'Morocco',
     home_flag: '🇧🇷',
     away_flag: '🇲🇦',
-    predicted_home: 3,
-    predicted_away: 1,
+    predicted_home_score: 3,
+    predicted_away_score: 1,
     home_win_prob: 0.65,
     draw_prob: 0.20,
     away_win_prob: 0.15,
-    confidence: 0.85,
-    analysis: 'Análisis preliminar de DeepSeek: Brasil llega como uno de los máximos favoritos. Aunque Marruecos es defensivamente sólido, la calidad ofensiva de la delantera brasileña terminará rompiendo el cerco defensivo en la segunda mitad.',
+    confidence_score: 0.85,
+    analysis_text: 'Análisis preliminar de DeepSeek: Brasil llega como uno de los máximos favoritos. Aunque Marruecos es defensivamente sólido, la calidad ofensiva de la delantera brasileña terminará rompiendo el cerco defensivo en la segunda mitad.',
     factors: [
-      { name: 'Ataque', impact: 'positive', description: 'Brasil promedia 2.0 goles por partido', team: 'BRA' },
-      { name: 'Defensa', impact: 'neutral', description: 'Marruecos concede muy pocos goles', team: 'MAR' }
+      'Brasil promedia 2.0 goles por partido',
+      'Marruecos concede muy pocos goles'
     ],
     date: '2026-06-13',
   }
