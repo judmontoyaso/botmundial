@@ -165,7 +165,7 @@ export default function PredictionsPage() {
                   {/* Confidence + Date */}
                   <div className="flex items-center gap-3">
                     <ConfidenceBadge confidence={pred.confidence_score} />
-                    <span className="text-xs text-text-secondary">{match.match_date?.substring(0, 10) || match.date}</span>
+                    <span className="text-xs text-text-secondary">{match.date}</span>
                   </div>
                 </div>
 
