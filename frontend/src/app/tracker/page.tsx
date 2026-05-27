@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   Trophy,
@@ -9,6 +9,8 @@ import {
   Award,
   TrendingUp,
   Plus,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react';
 import {
   LineChart,
@@ -20,12 +22,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import StatsCard from '@/components/ui/StatsCard';
-import { mockMyPredictions, mockPredictionStats, mockMatches } from '@/lib/mock-data';
-
-const container = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.06 } },
-};
+import { api } from '@/lib/api';
+import type { MyPrediction, PredictionStats, MatchWithTeams } from '@/types';
 
 const item = {
   hidden: { opacity: 0, y: 20 },
@@ -62,25 +60,129 @@ function PointsBadge({ points }: { points: number | null }) {
 }
 
 export default function TrackerPage() {
+  const [predictions, setPredictions] = useState<MyPrediction[]>([]);
+  const [stats, setStats] = useState<PredictionStats | null>(null);
+  const [matchMap, setMatchMap] = useState<Map<number, MatchWithTeams>>(new Map());
+  const [upcomingMatches, setUpcomingMatches] = useState<MatchWithTeams[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [showForm, setShowForm] = useState(false);
   const [formMatchId, setFormMatchId] = useState('');
   const [formHome, setFormHome] = useState('');
   const [formAway, setFormAway] = useState('');
   const [formNotes, setFormNotes] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const scheduledMatches = mockMatches.filter(m => m.status === 'scheduled');
-  const resolvedPredictions = mockMyPredictions.filter(p => p.points !== null);
-  const pendingPredictions = mockMyPredictions.filter(p => p.points === null);
+  async function loadData() {
+    try {
+      const [preds, allMatches, statsData] = await Promise.all([
+        api.getPredictions(),
+        api.getMatches(),
+        api.getPredictionStats(),
+      ]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+      const map = new Map<number, MatchWithTeams>(
+        allMatches.map((m) => [m.match.id, m])
+      );
+      setMatchMap(map);
+      setPredictions(preds);
+      setStats(statsData);
+
+      const scheduled = allMatches
+        .filter((m) => m.match.status === 'scheduled')
+        .sort(
+          (a, b) =>
+            new Date(a.match.match_date).getTime() -
+            new Date(b.match.match_date).getTime()
+        );
+      setUpcomingMatches(scheduled);
+    } catch (err) {
+      setError('No se pudo conectar con el servidor. Asegúrate de que el backend esté activo.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const resolvedPredictions = useMemo(
+    () => predictions.filter((p) => p.points_earned !== null),
+    [predictions]
+  );
+
+  const pendingPredictions = useMemo(
+    () => predictions.filter((p) => p.points_earned === null),
+    [predictions]
+  );
+
+  // Build points history from resolved predictions sorted by creation date
+  const pointsHistory = useMemo(() => {
+    const sorted = [...resolvedPredictions].sort(
+      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    );
+    let cumulative = 0;
+    return sorted.map((p, i) => {
+      const pts = p.points_earned ?? 0;
+      cumulative += pts;
+      return { matchday: i + 1, points: pts, cumulative };
+    });
+  }, [resolvedPredictions]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In real app, this would call the API
-    setShowForm(false);
-    setFormMatchId('');
-    setFormHome('');
-    setFormAway('');
-    setFormNotes('');
+    if (!formMatchId || formHome === '' || formAway === '') return;
+    setSubmitting(true);
+    try {
+      await api.savePrediction({
+        match_id: Number(formMatchId),
+        predicted_home_score: Number(formHome),
+        predicted_away_score: Number(formAway),
+        notes: formNotes || undefined,
+      });
+      // Refresh predictions and stats
+      const [preds, statsData] = await Promise.all([
+        api.getPredictions(),
+        api.getPredictionStats(),
+      ]);
+      setPredictions(preds);
+      setStats(statsData);
+      setShowForm(false);
+      setFormMatchId('');
+      setFormHome('');
+      setFormAway('');
+      setFormNotes('');
+    } catch (err) {
+      console.error('Error guardando predicción:', err);
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto h-[60vh] flex flex-col items-center justify-center gap-4">
+        <Loader2 className="w-12 h-12 text-accent-gold animate-spin" />
+        <p className="text-text-secondary font-medium animate-pulse">
+          Cargando tu polla mundialista...
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto h-[60vh] flex flex-col items-center justify-center gap-4">
+        <AlertCircle className="w-12 h-12 text-danger" />
+        <p className="text-text-secondary text-center max-w-md">{error}</p>
+      </div>
+    );
+  }
+
+  const totalPoints = stats?.total_points ?? 0;
+  const accuracy = stats?.accuracy_pct ?? 0;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -121,7 +223,7 @@ export default function TrackerPage() {
         <div className="relative">
           <Trophy className="w-12 h-12 text-accent-gold mx-auto mb-3 animate-float" />
           <p className="text-6xl sm:text-7xl font-bold gradient-gold-text text-glow-gold">
-            {mockPredictionStats.total_points}
+            {totalPoints}
           </p>
           <p className="text-text-secondary text-sm mt-2">Puntos Totales</p>
         </div>
@@ -129,46 +231,36 @@ export default function TrackerPage() {
 
       {/* Stats Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <StatsCard icon={Target} label="Total Predicciones" value={mockPredictionStats.total_predictions} color="blue" delay={0.15} />
-        <StatsCard icon={CheckCircle2} label="Exactos (3pts)" value={mockPredictionStats.exact_scores} color="green" delay={0.2} />
-        <StatsCard icon={Award} label="Ganador (1pt)" value={mockPredictionStats.correct_winner} color="amber" delay={0.25} />
-        <StatsCard icon={TrendingUp} label="Precisión" value={`${mockPredictionStats.accuracy}%`} trend={{ value: 8, positive: true }} color="gold" delay={0.3} />
+        <StatsCard icon={Target} label="Total Predicciones" value={stats?.total_predictions ?? 0} color="blue" delay={0.15} />
+        <StatsCard icon={CheckCircle2} label="Exactos (3pts)" value={stats?.exact_scores ?? 0} color="green" delay={0.2} />
+        <StatsCard icon={Award} label="Ganador (1pt)" value={stats?.correct_outcomes ?? 0} color="amber" delay={0.25} />
+        <StatsCard icon={TrendingUp} label="Precisión" value={`${accuracy}%`} color="gold" delay={0.3} />
       </div>
 
       {/* Points Chart */}
-      <motion.div variants={item} initial="hidden" animate="show" className="rounded-2xl border border-accent-gold/10 bg-bg-secondary/60 backdrop-blur-xl p-6">
-        <h2 className="text-lg font-semibold text-text-primary mb-5 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-accent-gold" />
-          Evolución de Puntos
-        </h2>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={mockPredictionStats.points_history}>
-              <defs>
-                <linearGradient id="lineGold" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#d4a853" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#d4a853" stopOpacity={0.1} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(136,136,160,0.1)" />
-              <XAxis dataKey="matchday" tick={{ fill: '#8888a0', fontSize: 12 }} axisLine={{ stroke: 'rgba(136,136,160,0.2)' }} tickLine={false} label={{ value: 'Jornada', position: 'insideBottom', offset: -5, fill: '#8888a0', fontSize: 11 }} />
-              <YAxis tick={{ fill: '#8888a0', fontSize: 12 }} axisLine={{ stroke: 'rgba(136,136,160,0.2)' }} tickLine={false} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#12121a',
-                  border: '1px solid rgba(212,168,83,0.2)',
-                  borderRadius: '12px',
-                  color: '#f0f0f5',
-                  fontSize: '12px',
-                }}
-                labelFormatter={(v) => `Jornada ${v}`}
-              />
-              <Line type="monotone" dataKey="cumulative" stroke="#d4a853" strokeWidth={2.5} dot={{ fill: '#d4a853', r: 4, stroke: '#12121a', strokeWidth: 2 }} activeDot={{ r: 6, fill: '#f59e0b' }} name="Puntos Acumulados" />
-              <Line type="monotone" dataKey="points" stroke="#3b82f6" strokeWidth={1.5} strokeDasharray="5 5" dot={{ fill: '#3b82f6', r: 3 }} name="Puntos por Jornada" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </motion.div>
+      {pointsHistory.length > 0 && (
+        <motion.div variants={item} initial="hidden" animate="show" className="rounded-2xl border border-accent-gold/10 bg-bg-secondary/60 backdrop-blur-xl p-6">
+          <h2 className="text-lg font-semibold text-text-primary mb-5 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-accent-gold" />
+            Evolución de Puntos
+          </h2>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={pointsHistory}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(136,136,160,0.1)" />
+                <XAxis dataKey="matchday" tick={{ fill: '#8888a0', fontSize: 12 }} axisLine={{ stroke: 'rgba(136,136,160,0.2)' }} tickLine={false} label={{ value: 'Partido', position: 'insideBottom', offset: -5, fill: '#8888a0', fontSize: 11 }} />
+                <YAxis tick={{ fill: '#8888a0', fontSize: 12 }} axisLine={{ stroke: 'rgba(136,136,160,0.2)' }} tickLine={false} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#12121a', border: '1px solid rgba(212,168,83,0.2)', borderRadius: '12px', color: '#f0f0f5', fontSize: '12px' }}
+                  labelFormatter={(v) => `Partido ${v}`}
+                />
+                <Line type="monotone" dataKey="cumulative" stroke="#d4a853" strokeWidth={2.5} dot={{ fill: '#d4a853', r: 4, stroke: '#12121a', strokeWidth: 2 }} activeDot={{ r: 6, fill: '#f59e0b' }} name="Puntos Acumulados" />
+                <Line type="monotone" dataKey="points" stroke="#3b82f6" strokeWidth={1.5} strokeDasharray="5 5" dot={{ fill: '#3b82f6', r: 3 }} name="Puntos por Partido" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+      )}
 
       {/* Add Prediction Form */}
       {showForm && (
@@ -193,9 +285,9 @@ export default function TrackerPage() {
                   required
                 >
                   <option value="" className="bg-bg-secondary">Seleccionar partido...</option>
-                  {scheduledMatches.map(m => (
-                    <option key={m.id} value={m.id} className="bg-bg-secondary">
-                      {m.home_flag} {m.home_team_name} vs {m.away_team_name} {m.away_flag} — {m.date}
+                  {upcomingMatches.map(m => (
+                    <option key={m.match.id} value={m.match.id} className="bg-bg-secondary">
+                      {m.home_team_flag} {m.home_team_name} vs {m.away_team_name} {m.away_team_flag} — {new Date(m.match.match_date).toLocaleDateString('es-CO', { month: 'short', day: 'numeric' })}
                     </option>
                   ))}
                 </select>
@@ -249,12 +341,29 @@ export default function TrackerPage() {
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-accent-gold to-accent-amber text-bg-primary text-sm font-semibold hover:shadow-[0_0_20px_rgba(212,168,83,0.3)] transition-shadow"
+                disabled={submitting}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-accent-gold to-accent-amber text-bg-primary text-sm font-semibold hover:shadow-[0_0_20px_rgba(212,168,83,0.3)] transition-shadow disabled:opacity-60"
               >
+                {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
                 Guardar Predicción
               </button>
             </div>
           </form>
+        </motion.div>
+      )}
+
+      {/* Empty state */}
+      {predictions.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="rounded-2xl border border-accent-gold/10 bg-bg-secondary/60 backdrop-blur-xl p-12 text-center"
+        >
+          <Target className="w-12 h-12 text-accent-gold/30 mx-auto mb-4" />
+          <p className="text-text-primary font-semibold mb-2">Aún no tienes predicciones</p>
+          <p className="text-text-secondary text-sm">
+            El torneo comienza el 11 de junio. Haz clic en <strong>Nueva Predicción</strong> para registrar tus pronósticos.
+          </p>
         </motion.div>
       )}
 
@@ -267,105 +376,120 @@ export default function TrackerPage() {
             <span className="text-xs bg-accent-amber/15 text-accent-amber px-2 py-0.5 rounded-full">{pendingPredictions.length}</span>
           </h2>
           <div className="space-y-2">
-            {pendingPredictions.map((pred, idx) => (
-              <motion.div
-                key={pred.id}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.05 }}
-                className="flex items-center justify-between p-3 rounded-xl bg-bg-tertiary/30 hover:bg-bg-tertiary/50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-lg">{pred.home_flag}</span>
-                  <span className="text-sm font-medium text-text-primary">{pred.home_team_name}</span>
-                  <span className="text-sm font-bold text-accent-gold">{pred.predicted_home} - {pred.predicted_away}</span>
-                  <span className="text-sm font-medium text-text-primary">{pred.away_team_name}</span>
-                  <span className="text-lg">{pred.away_flag}</span>
-                </div>
-                <PointsBadge points={pred.points} />
-              </motion.div>
-            ))}
+            {pendingPredictions.map((pred, idx) => {
+              const match = matchMap.get(pred.match_id);
+              return (
+                <motion.div
+                  key={pred.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="flex items-center justify-between p-3 rounded-xl bg-bg-tertiary/30 hover:bg-bg-tertiary/50 transition-colors"
+                >
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="text-lg">{match?.home_team_flag ?? '🏳️'}</span>
+                    <span className="text-sm font-medium text-text-primary">{match?.home_team_name ?? `Partido #${pred.match_id}`}</span>
+                    <span className="text-sm font-bold text-accent-gold">{pred.predicted_home_score} - {pred.predicted_away_score}</span>
+                    <span className="text-sm font-medium text-text-primary">{match?.away_team_name ?? ''}</span>
+                    <span className="text-lg">{match?.away_team_flag ?? ''}</span>
+                  </div>
+                  <PointsBadge points={pred.points_earned} />
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       )}
 
-      {/* Predictions Table */}
-      <motion.div variants={item} initial="hidden" animate="show" className="rounded-2xl border border-accent-gold/10 bg-bg-secondary/60 backdrop-blur-xl overflow-hidden">
-        <div className="p-5 border-b border-accent-gold/10">
-          <h2 className="text-lg font-semibold text-text-primary flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-success" />
-            Historial de Predicciones
-          </h2>
-        </div>
+      {/* Resolved Predictions Table */}
+      {resolvedPredictions.length > 0 && (
+        <motion.div variants={item} initial="hidden" animate="show" className="rounded-2xl border border-accent-gold/10 bg-bg-secondary/60 backdrop-blur-xl overflow-hidden">
+          <div className="p-5 border-b border-accent-gold/10">
+            <h2 className="text-lg font-semibold text-text-primary flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-success" />
+              Historial de Predicciones
+            </h2>
+          </div>
 
-        {/* Desktop Table */}
-        <div className="hidden sm:block overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/5">
-                <th className="text-left py-3 px-5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Partido</th>
-                <th className="text-center py-3 px-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Mi Predicción</th>
-                <th className="text-center py-3 px-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Resultado</th>
-                <th className="text-center py-3 px-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Puntos</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {resolvedPredictions.map((pred, idx) => (
-                <motion.tr
-                  key={pred.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 + idx * 0.04 }}
-                  className="hover:bg-bg-tertiary/20 transition-colors"
-                >
-                  <td className="py-3 px-5">
-                    <div className="flex items-center gap-2">
-                      <span>{pred.home_flag}</span>
-                      <span className="text-sm text-text-primary font-medium">{pred.home_team_name}</span>
-                      <span className="text-xs text-text-secondary">vs</span>
-                      <span className="text-sm text-text-primary font-medium">{pred.away_team_name}</span>
-                      <span>{pred.away_flag}</span>
+          {/* Desktop Table */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-white/5">
+                  <th className="text-left py-3 px-5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Partido</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Mi Predicción</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Resultado</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Puntos</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {resolvedPredictions.map((pred, idx) => {
+                  const match = matchMap.get(pred.match_id);
+                  const actualHome = match?.match.home_score;
+                  const actualAway = match?.match.away_score;
+                  return (
+                    <motion.tr
+                      key={pred.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4 + idx * 0.04 }}
+                      className="hover:bg-bg-tertiary/20 transition-colors"
+                    >
+                      <td className="py-3 px-5">
+                        <div className="flex items-center gap-2">
+                          <span>{match?.home_team_flag ?? '🏳️'}</span>
+                          <span className="text-sm text-text-primary font-medium">{match?.home_team_name ?? `Partido #${pred.match_id}`}</span>
+                          <span className="text-xs text-text-secondary">vs</span>
+                          <span className="text-sm text-text-primary font-medium">{match?.away_team_name ?? ''}</span>
+                          <span>{match?.away_team_flag ?? ''}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <span className="text-sm font-bold text-accent-gold">{pred.predicted_home_score} - {pred.predicted_away_score}</span>
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <span className="text-sm font-bold text-text-primary">
+                          {actualHome != null ? `${actualHome} - ${actualAway}` : 'Pendiente'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <PointsBadge points={pred.points_earned} />
+                      </td>
+                    </motion.tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="sm:hidden p-4 space-y-3">
+            {resolvedPredictions.map((pred) => {
+              const match = matchMap.get(pred.match_id);
+              const actualHome = match?.match.home_score;
+              const actualAway = match?.match.away_score;
+              return (
+                <div key={pred.id} className="p-3 rounded-xl bg-bg-tertiary/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-sm">
+                      <span>{match?.home_team_flag ?? '🏳️'}</span>
+                      <span className="font-medium text-text-primary">{match?.home_team_name ?? `#${pred.match_id}`}</span>
+                      <span className="text-text-secondary text-xs">vs</span>
+                      <span className="font-medium text-text-primary">{match?.away_team_name ?? ''}</span>
+                      <span>{match?.away_team_flag ?? ''}</span>
                     </div>
-                  </td>
-                  <td className="py-3 px-4 text-center">
-                    <span className="text-sm font-bold text-accent-gold">{pred.predicted_home} - {pred.predicted_away}</span>
-                  </td>
-                  <td className="py-3 px-4 text-center">
-                    <span className="text-sm font-bold text-text-primary">
-                      {pred.actual_home !== null ? `${pred.actual_home} - ${pred.actual_away}` : 'Pendiente'}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-center">
-                    <PointsBadge points={pred.points} />
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Mobile Cards */}
-        <div className="sm:hidden p-4 space-y-3">
-          {resolvedPredictions.map((pred) => (
-            <div key={pred.id} className="p-3 rounded-xl bg-bg-tertiary/30 space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-sm">
-                  <span>{pred.home_flag}</span>
-                  <span className="font-medium text-text-primary">{pred.home_team_name}</span>
-                  <span className="text-text-secondary text-xs">vs</span>
-                  <span className="font-medium text-text-primary">{pred.away_team_name}</span>
-                  <span>{pred.away_flag}</span>
+                    <PointsBadge points={pred.points_earned} />
+                  </div>
+                  <div className="flex items-center gap-4 text-xs">
+                    <span className="text-text-secondary">Predicción: <span className="text-accent-gold font-bold">{pred.predicted_home_score}-{pred.predicted_away_score}</span></span>
+                    <span className="text-text-secondary">Resultado: <span className="text-text-primary font-bold">{actualHome != null ? `${actualHome}-${actualAway}` : '-'}</span></span>
+                  </div>
                 </div>
-                <PointsBadge points={pred.points} />
-              </div>
-              <div className="flex items-center gap-4 text-xs">
-                <span className="text-text-secondary">Predicción: <span className="text-accent-gold font-bold">{pred.predicted_home}-{pred.predicted_away}</span></span>
-                <span className="text-text-secondary">Resultado: <span className="text-text-primary font-bold">{pred.actual_home !== null ? `${pred.actual_home}-${pred.actual_away}` : '-'}</span></span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

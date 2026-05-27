@@ -13,10 +13,13 @@
       "draws_last_10": 4,
       "losses_last_10": 0,
       "world_cup_appearances": 17,
-      "best_finish": "Quarterfinals"
-    },
-    "api_id": 16,
-    "logo_url": "https://media.api-sports.io/football/teams/16.png"
+      "best_finish": "Cuartos de Final",
+      "elo_rating": 1910,
+      "xg_for_avg": 1.45,
+      "xg_against_avg": 1.00,
+      "clean_sheets_last_10": 4,
+      "form_last_5": 3
+    }
   },
   {
     "name": "South Korea",
@@ -32,10 +35,13 @@
       "draws_last_10": 3,
       "losses_last_10": 3,
       "world_cup_appearances": 11,
-      "best_finish": "Semifinals"
-    },
-    "api_id": 17,
-    "logo_url": "https://media.api-sports.io/football/teams/17.png"
+      "best_finish": "Semifinales",
+      "elo_rating": 1840,
+      "xg_for_avg": 1.25,
+      "xg_against_avg": 1.00,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 2
+    }
   },
   {
     "name": "South Africa",
@@ -51,10 +57,13 @@
       "draws_last_10": 2,
       "losses_last_10": 4,
       "world_cup_appearances": 3,
-      "best_finish": "Group Stage"
-    },
-    "api_id": 1531,
-    "logo_url": "https://media.api-sports.io/football/teams/1531.png"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1545,
+      "xg_for_avg": 1.05,
+      "xg_against_avg": 1.20,
+      "clean_sheets_last_10": 2,
+      "form_last_5": 2
+    }
   },
   {
     "name": "Czechia",
@@ -70,7 +79,12 @@
       "draws_last_10": 3,
       "losses_last_10": 4,
       "world_cup_appearances": 1,
-      "best_finish": "Group Stage"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1775,
+      "xg_for_avg": 1.15,
+      "xg_against_avg": 1.10,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 2
     }
   },
   {
@@ -87,10 +101,13 @@
       "draws_last_10": 1,
       "losses_last_10": 3,
       "world_cup_appearances": 2,
-      "best_finish": "Group Stage"
-    },
-    "api_id": 5529,
-    "logo_url": "https://media.api-sports.io/football/teams/5529.png"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1820,
+      "xg_for_avg": 1.20,
+      "xg_against_avg": 1.25,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 3
+    }
   },
   {
     "name": "Switzerland",
@@ -106,10 +123,13 @@
       "draws_last_10": 3,
       "losses_last_10": 2,
       "world_cup_appearances": 12,
-      "best_finish": "Quarterfinals"
-    },
-    "api_id": 15,
-    "logo_url": "https://media.api-sports.io/football/teams/15.png"
+      "best_finish": "Cuartos de Final",
+      "elo_rating": 1860,
+      "xg_for_avg": 1.40,
+      "xg_against_avg": 0.85,
+      "clean_sheets_last_10": 4,
+      "form_last_5": 3
+    }
   },
   {
     "name": "Qatar",
@@ -125,10 +145,13 @@
       "draws_last_10": 1,
       "losses_last_10": 4,
       "world_cup_appearances": 1,
-      "best_finish": "Group Stage"
-    },
-    "api_id": 1569,
-    "logo_url": "https://media.api-sports.io/football/teams/1569.png"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1665,
+      "xg_for_avg": 1.10,
+      "xg_against_avg": 1.45,
+      "clean_sheets_last_10": 2,
+      "form_last_5": 3
+    }
   },
   {
     "name": "Bosnia-Herzegovina",
@@ -144,7 +167,12 @@
       "draws_last_10": 1,
       "losses_last_10": 3,
       "world_cup_appearances": 1,
-      "best_finish": "Group Stage"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1630,
+      "xg_for_avg": 1.00,
+      "xg_against_avg": 1.40,
+      "clean_sheets_last_10": 2,
+      "form_last_5": 3
     }
   },
   {
@@ -161,10 +189,13 @@
       "draws_last_10": 2,
       "losses_last_10": 1,
       "world_cup_appearances": 22,
-      "best_finish": "Winner (5)"
-    },
-    "api_id": 6,
-    "logo_url": "https://media.api-sports.io/football/teams/6.png"
+      "best_finish": "Campeón (5x)",
+      "elo_rating": 2045,
+      "xg_for_avg": 1.80,
+      "xg_against_avg": 0.85,
+      "clean_sheets_last_10": 5,
+      "form_last_5": 4
+    }
   },
   {
     "name": "Morocco",
@@ -180,7 +211,12 @@
       "draws_last_10": 2,
       "losses_last_10": 2,
       "world_cup_appearances": 6,
-      "best_finish": "Semifinals"
+      "best_finish": "Semifinales",
+      "elo_rating": 1875,
+      "xg_for_avg": 1.50,
+      "xg_against_avg": 0.70,
+      "clean_sheets_last_10": 5,
+      "form_last_5": 3
     }
   },
   {
@@ -197,7 +233,12 @@
       "draws_last_10": 2,
       "losses_last_10": 1,
       "world_cup_appearances": 8,
-      "best_finish": "Group Stage"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1755,
+      "xg_for_avg": 1.15,
+      "xg_against_avg": 1.25,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 4
     }
   },
   {
@@ -214,7 +255,12 @@
       "draws_last_10": 3,
       "losses_last_10": 4,
       "world_cup_appearances": 1,
-      "best_finish": "Group Stage"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1510,
+      "xg_for_avg": 0.90,
+      "xg_against_avg": 1.75,
+      "clean_sheets_last_10": 1,
+      "form_last_5": 2
     }
   },
   {
@@ -231,7 +277,12 @@
       "draws_last_10": 3,
       "losses_last_10": 2,
       "world_cup_appearances": 11,
-      "best_finish": "Semifinals"
+      "best_finish": "Semifinales",
+      "elo_rating": 1920,
+      "xg_for_avg": 1.55,
+      "xg_against_avg": 0.95,
+      "clean_sheets_last_10": 4,
+      "form_last_5": 3
     }
   },
   {
@@ -248,7 +299,12 @@
       "draws_last_10": 1,
       "losses_last_10": 6,
       "world_cup_appearances": 8,
-      "best_finish": "Quarterfinals"
+      "best_finish": "Cuartos de Final",
+      "elo_rating": 1650,
+      "xg_for_avg": 0.95,
+      "xg_against_avg": 1.10,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 2
     }
   },
   {
@@ -265,7 +321,12 @@
       "draws_last_10": 4,
       "losses_last_10": 2,
       "world_cup_appearances": 6,
-      "best_finish": "Round of 16"
+      "best_finish": "Octavos de Final",
+      "elo_rating": 1820,
+      "xg_for_avg": 1.25,
+      "xg_against_avg": 1.10,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 2
     }
   },
   {
@@ -282,7 +343,12 @@
       "draws_last_10": 3,
       "losses_last_10": 0,
       "world_cup_appearances": 2,
-      "best_finish": "3rd Place"
+      "best_finish": "3er Lugar",
+      "elo_rating": 1755,
+      "xg_for_avg": 1.45,
+      "xg_against_avg": 1.15,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 4
     }
   },
   {
@@ -299,7 +365,12 @@
       "draws_last_10": 3,
       "losses_last_10": 1,
       "world_cup_appearances": 20,
-      "best_finish": "Winner (4)"
+      "best_finish": "Campeón (4x)",
+      "elo_rating": 1980,
+      "xg_for_avg": 1.65,
+      "xg_against_avg": 1.00,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 3
     }
   },
   {
@@ -316,7 +387,12 @@
       "draws_last_10": 4,
       "losses_last_10": 1,
       "world_cup_appearances": 4,
-      "best_finish": "Round of 16"
+      "best_finish": "Octavos de Final",
+      "elo_rating": 1810,
+      "xg_for_avg": 1.20,
+      "xg_against_avg": 1.00,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 3
     }
   },
   {
@@ -333,7 +409,12 @@
       "draws_last_10": 1,
       "losses_last_10": 4,
       "world_cup_appearances": 3,
-      "best_finish": "Group Stage"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1795,
+      "xg_for_avg": 1.30,
+      "xg_against_avg": 1.10,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 3
     }
   },
   {
@@ -350,7 +431,12 @@
       "draws_last_10": 3,
       "losses_last_10": 1,
       "world_cup_appearances": 0,
-      "best_finish": "Debut"
+      "best_finish": "Debut",
+      "elo_rating": 1490,
+      "xg_for_avg": 0.80,
+      "xg_against_avg": 1.60,
+      "clean_sheets_last_10": 1,
+      "form_last_5": 3
     }
   },
   {
@@ -367,7 +453,12 @@
       "draws_last_10": 2,
       "losses_last_10": 2,
       "world_cup_appearances": 11,
-      "best_finish": "Runner-up (3)"
+      "best_finish": "Subcampeón (3x)",
+      "elo_rating": 2005,
+      "xg_for_avg": 1.65,
+      "xg_against_avg": 0.90,
+      "clean_sheets_last_10": 4,
+      "form_last_5": 3
     }
   },
   {
@@ -384,7 +475,12 @@
       "draws_last_10": 1,
       "losses_last_10": 2,
       "world_cup_appearances": 7,
-      "best_finish": "Round of 16"
+      "best_finish": "Octavos de Final",
+      "elo_rating": 1885,
+      "xg_for_avg": 1.45,
+      "xg_against_avg": 0.95,
+      "clean_sheets_last_10": 4,
+      "form_last_5": 4
     }
   },
   {
@@ -401,7 +497,12 @@
       "draws_last_10": 3,
       "losses_last_10": 2,
       "world_cup_appearances": 6,
-      "best_finish": "Group Stage"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1700,
+      "xg_for_avg": 0.95,
+      "xg_against_avg": 1.15,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 3
     }
   },
   {
@@ -418,7 +519,12 @@
       "draws_last_10": 1,
       "losses_last_10": 3,
       "world_cup_appearances": 12,
-      "best_finish": "Runner-up"
+      "best_finish": "Subcampeón",
+      "elo_rating": 1845,
+      "xg_for_avg": 1.45,
+      "xg_against_avg": 1.00,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 3
     }
   },
   {
@@ -435,7 +541,12 @@
       "draws_last_10": 2,
       "losses_last_10": 3,
       "world_cup_appearances": 14,
-      "best_finish": "3rd Place"
+      "best_finish": "3er Lugar",
+      "elo_rating": 2015,
+      "xg_for_avg": 1.70,
+      "xg_against_avg": 0.90,
+      "clean_sheets_last_10": 4,
+      "form_last_5": 3
     }
   },
   {
@@ -452,7 +563,12 @@
       "draws_last_10": 2,
       "losses_last_10": 5,
       "world_cup_appearances": 6,
-      "best_finish": "Group Stage"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1655,
+      "xg_for_avg": 1.25,
+      "xg_against_avg": 1.05,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 2
     }
   },
   {
@@ -469,7 +585,12 @@
       "draws_last_10": 3,
       "losses_last_10": 0,
       "world_cup_appearances": 3,
-      "best_finish": "Group Stage"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1760,
+      "xg_for_avg": 1.15,
+      "xg_against_avg": 1.05,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 4
     }
   },
   {
@@ -486,7 +607,12 @@
       "draws_last_10": 3,
       "losses_last_10": 4,
       "world_cup_appearances": 2,
-      "best_finish": "Group Stage"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1545,
+      "xg_for_avg": 0.90,
+      "xg_against_avg": 1.50,
+      "clean_sheets_last_10": 2,
+      "form_last_5": 2
     }
   },
   {
@@ -503,7 +629,12 @@
       "draws_last_10": 3,
       "losses_last_10": 1,
       "world_cup_appearances": 16,
-      "best_finish": "Winner (1)"
+      "best_finish": "Campeón (1x)",
+      "elo_rating": 2000,
+      "xg_for_avg": 1.90,
+      "xg_against_avg": 0.75,
+      "clean_sheets_last_10": 5,
+      "form_last_5": 4
     }
   },
   {
@@ -520,7 +651,12 @@
       "draws_last_10": 4,
       "losses_last_10": 2,
       "world_cup_appearances": 14,
-      "best_finish": "Winner (2)"
+      "best_finish": "Campeón (2x)",
+      "elo_rating": 1930,
+      "xg_for_avg": 1.45,
+      "xg_against_avg": 0.90,
+      "clean_sheets_last_10": 4,
+      "form_last_5": 3
     }
   },
   {
@@ -537,7 +673,12 @@
       "draws_last_10": 4,
       "losses_last_10": 0,
       "world_cup_appearances": 6,
-      "best_finish": "Round of 16"
+      "best_finish": "Octavos de Final",
+      "elo_rating": 1710,
+      "xg_for_avg": 1.05,
+      "xg_against_avg": 1.40,
+      "clean_sheets_last_10": 2,
+      "form_last_5": 3
     }
   },
   {
@@ -554,7 +695,12 @@
       "draws_last_10": 1,
       "losses_last_10": 3,
       "world_cup_appearances": 0,
-      "best_finish": "Debut"
+      "best_finish": "Debut",
+      "elo_rating": 1645,
+      "xg_for_avg": 0.95,
+      "xg_against_avg": 1.30,
+      "clean_sheets_last_10": 2,
+      "form_last_5": 3
     }
   },
   {
@@ -571,7 +717,12 @@
       "draws_last_10": 4,
       "losses_last_10": 0,
       "world_cup_appearances": 16,
-      "best_finish": "Winner (2)"
+      "best_finish": "Campeón (2x)",
+      "elo_rating": 2048,
+      "xg_for_avg": 1.95,
+      "xg_against_avg": 0.80,
+      "clean_sheets_last_10": 5,
+      "form_last_5": 4
     }
   },
   {
@@ -588,7 +739,12 @@
       "draws_last_10": 4,
       "losses_last_10": 1,
       "world_cup_appearances": 3,
-      "best_finish": "Quarterfinals"
+      "best_finish": "Cuartos de Final",
+      "elo_rating": 1870,
+      "xg_for_avg": 1.40,
+      "xg_against_avg": 0.90,
+      "clean_sheets_last_10": 4,
+      "form_last_5": 3
     }
   },
   {
@@ -605,7 +761,12 @@
       "draws_last_10": 4,
       "losses_last_10": 0,
       "world_cup_appearances": 3,
-      "best_finish": "Round of 16"
+      "best_finish": "Octavos de Final",
+      "elo_rating": 1785,
+      "xg_for_avg": 1.30,
+      "xg_against_avg": 1.10,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 3
     }
   },
   {
@@ -622,7 +783,12 @@
       "draws_last_10": 4,
       "losses_last_10": 3,
       "world_cup_appearances": 1,
-      "best_finish": "Group Stage"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1620,
+      "xg_for_avg": 1.00,
+      "xg_against_avg": 1.20,
+      "clean_sheets_last_10": 2,
+      "form_last_5": 2
     }
   },
   {
@@ -639,7 +805,12 @@
       "draws_last_10": 2,
       "losses_last_10": 4,
       "world_cup_appearances": 18,
-      "best_finish": "Winner (3)"
+      "best_finish": "Campeón (3x)",
+      "elo_rating": 2062,
+      "xg_for_avg": 1.85,
+      "xg_against_avg": 0.75,
+      "clean_sheets_last_10": 5,
+      "form_last_5": 3
     }
   },
   {
@@ -656,7 +827,12 @@
       "draws_last_10": 4,
       "losses_last_10": 1,
       "world_cup_appearances": 7,
-      "best_finish": "3rd Place"
+      "best_finish": "3er Lugar",
+      "elo_rating": 1835,
+      "xg_for_avg": 1.40,
+      "xg_against_avg": 1.10,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 3
     }
   },
   {
@@ -673,7 +849,12 @@
       "draws_last_10": 4,
       "losses_last_10": 1,
       "world_cup_appearances": 4,
-      "best_finish": "Round of 16"
+      "best_finish": "Octavos de Final",
+      "elo_rating": 1700,
+      "xg_for_avg": 1.25,
+      "xg_against_avg": 1.00,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 3
     }
   },
   {
@@ -690,7 +871,12 @@
       "draws_last_10": 2,
       "losses_last_10": 3,
       "world_cup_appearances": 0,
-      "best_finish": "Debut"
+      "best_finish": "Debut",
+      "elo_rating": 1590,
+      "xg_for_avg": 1.05,
+      "xg_against_avg": 1.40,
+      "clean_sheets_last_10": 2,
+      "form_last_5": 3
     }
   },
   {
@@ -707,7 +893,12 @@
       "draws_last_10": 3,
       "losses_last_10": 1,
       "world_cup_appearances": 8,
-      "best_finish": "3rd Place"
+      "best_finish": "3er Lugar",
+      "elo_rating": 2000,
+      "xg_for_avg": 1.80,
+      "xg_against_avg": 0.85,
+      "clean_sheets_last_10": 4,
+      "form_last_5": 4
     }
   },
   {
@@ -724,7 +915,12 @@
       "draws_last_10": 2,
       "losses_last_10": 3,
       "world_cup_appearances": 6,
-      "best_finish": "Quarterfinals"
+      "best_finish": "Cuartos de Final",
+      "elo_rating": 1865,
+      "xg_for_avg": 1.50,
+      "xg_against_avg": 0.85,
+      "clean_sheets_last_10": 4,
+      "form_last_5": 3
     }
   },
   {
@@ -741,7 +937,12 @@
       "draws_last_10": 3,
       "losses_last_10": 1,
       "world_cup_appearances": 0,
-      "best_finish": "Debut"
+      "best_finish": "Debut",
+      "elo_rating": 1570,
+      "xg_for_avg": 1.05,
+      "xg_against_avg": 1.25,
+      "clean_sheets_last_10": 2,
+      "form_last_5": 3
     }
   },
   {
@@ -758,7 +959,12 @@
       "draws_last_10": 2,
       "losses_last_10": 4,
       "world_cup_appearances": 1,
-      "best_finish": "Group Stage"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1585,
+      "xg_for_avg": 1.00,
+      "xg_against_avg": 1.40,
+      "clean_sheets_last_10": 2,
+      "form_last_5": 2
     }
   },
   {
@@ -775,7 +981,12 @@
       "draws_last_10": 4,
       "losses_last_10": 0,
       "world_cup_appearances": 16,
-      "best_finish": "Winner (1)"
+      "best_finish": "Campeón (1x)",
+      "elo_rating": 2030,
+      "xg_for_avg": 1.75,
+      "xg_against_avg": 0.80,
+      "clean_sheets_last_10": 5,
+      "form_last_5": 4
     }
   },
   {
@@ -792,7 +1003,12 @@
       "draws_last_10": 3,
       "losses_last_10": 0,
       "world_cup_appearances": 6,
-      "best_finish": "Runner-up"
+      "best_finish": "Subcampeón",
+      "elo_rating": 1985,
+      "xg_for_avg": 1.35,
+      "xg_against_avg": 0.90,
+      "clean_sheets_last_10": 4,
+      "form_last_5": 4
     }
   },
   {
@@ -809,7 +1025,12 @@
       "draws_last_10": 1,
       "losses_last_10": 4,
       "world_cup_appearances": 1,
-      "best_finish": "Group Stage"
+      "best_finish": "Fase de Grupos",
+      "elo_rating": 1680,
+      "xg_for_avg": 1.05,
+      "xg_against_avg": 1.25,
+      "clean_sheets_last_10": 2,
+      "form_last_5": 3
     }
   },
   {
@@ -826,7 +1047,12 @@
       "draws_last_10": 2,
       "losses_last_10": 3,
       "world_cup_appearances": 4,
-      "best_finish": "Quarterfinals"
+      "best_finish": "Cuartos de Final",
+      "elo_rating": 1675,
+      "xg_for_avg": 1.15,
+      "xg_against_avg": 1.20,
+      "clean_sheets_last_10": 3,
+      "form_last_5": 3
     }
   }
 ]

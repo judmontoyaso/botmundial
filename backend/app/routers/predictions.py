@@ -1,6 +1,6 @@
 """Router for user predictions and AI predictions."""
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 
 from app.models.prediction import (
     AIPrediction,
@@ -60,8 +60,17 @@ async def prediction_stats():
 
 
 @router.get("/ai/{match_id}", response_model=PredictionResponse)
-async def get_ai_prediction(match_id: int):
-    """Get a combined AI + statistical prediction for a match."""
+async def get_ai_prediction(
+    match_id: int,
+    force: bool = Query(default=False, description="Force regenerate even if cached"),
+):
+    """Get a combined AI + statistical prediction. Pass force=true to refresh from DeepSeek."""
+    if force:
+        data_service.delete_ai_prediction(match_id)
+        # Also clear the in-process LLM memory cache for this match
+        from app.services import llm_service
+        llm_service._cache.pop(f"prediction_{match_id}", None)
+        llm_service._cache.pop(f"analysis_{match_id}", None)
     prediction = predictor_service.predict_match(match_id)
     if prediction is None:
         raise HTTPException(status_code=404, detail=f"Match {match_id} not found or teams missing")

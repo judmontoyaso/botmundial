@@ -33,7 +33,7 @@ class AIPrediction(BaseModel):
 
     match_id: int
     model_config = {"protected_namespaces": ()}
-    model_used: str = Field(default="gemini-1.5-flash", description="LLM model identifier")
+    model_used: str = Field(default="deepseek-chat", description="LLM model identifier")
     predicted_home_score: int = Field(..., ge=0)
     predicted_away_score: int = Field(..., ge=0)
     home_win_prob: float = Field(..., ge=0.0, le=1.0, description="P(home win)")
@@ -42,6 +42,13 @@ class AIPrediction(BaseModel):
     confidence_score: float = Field(..., ge=0.0, le=1.0, description="Model confidence")
     analysis_text: str = Field(..., description="Narrative analysis of the match")
     factors: list[str] = Field(default_factory=list, description="Key factors in prediction")
+    # Poisson model outputs
+    poisson_home_lambda: float = Field(default=1.2, description="Expected goals home (Poisson λ)")
+    poisson_away_lambda: float = Field(default=1.2, description="Expected goals away (Poisson λ)")
+    scoreline_matrix: list[list[float]] = Field(
+        default_factory=list,
+        description="6x6 matrix of scoreline probabilities [home_goals][away_goals]",
+    )
 
 
 class PredictionStats(BaseModel):

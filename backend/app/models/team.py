@@ -13,6 +13,12 @@ class TeamStats(BaseModel):
     losses_last_10: int = Field(..., ge=0, le=10, description="Losses in last 10 matches")
     world_cup_appearances: int = Field(..., ge=0, description="Total World Cup appearances")
     best_finish: str = Field(..., description="Best World Cup finish")
+    # Enhanced analytics fields
+    elo_rating: int = Field(default=1500, description="World Football ELO rating")
+    xg_for_avg: float = Field(default=1.2, description="Expected goals scored per match")
+    xg_against_avg: float = Field(default=1.2, description="Expected goals conceded per match")
+    clean_sheets_last_10: int = Field(default=3, ge=0, le=10, description="Clean sheets in last 10")
+    form_last_5: int = Field(default=2, ge=0, le=5, description="Wins in last 5 matches")
 
 
 class Team(BaseModel):
@@ -25,6 +31,7 @@ class Team(BaseModel):
     fifa_ranking: int = Field(..., ge=1, description="Current FIFA ranking")
     confederation: str = Field(..., description="FIFA confederation (e.g. UEFA, CONMEBOL)")
     flag_emoji: str = Field(..., description="Country flag emoji")
+    flag_url: str = Field(default="", description="Flag image URL (flagcdn.com)")
     stats: TeamStats = Field(..., description="Team statistics")
 
 

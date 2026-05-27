@@ -1,4 +1,4 @@
-import type { Team, Match, MyPrediction, AIPrediction, GroupStanding } from '@/types';
+import type { Team, MatchWithTeams, MyPrediction, AIPrediction, PredictionStats } from '@/types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
@@ -26,22 +26,26 @@ export const api = {
   getTeamsByGroup: (letter: string) => fetchJSON<Team[]>(`/teams/group/${letter}`),
 
   // Matches
-  getMatches: () => fetchJSON<Match[]>('/matches'),
-  getMatch: (id: number) => fetchJSON<Match>(`/matches/${id}`),
-  getUpcomingMatches: () => fetchJSON<Match[]>('/matches/upcoming'),
+  getMatches: (params?: { stage?: string; group?: string; status?: string }) => {
+    const qs = params ? '?' + new URLSearchParams(Object.entries(params).filter(([, v]) => v != null) as [string, string][]).toString() : '';
+    return fetchJSON<MatchWithTeams[]>(`/matches${qs}`);
+  },
+  getMatch: (id: number) => fetchJSON<MatchWithTeams>(`/matches/${id}`),
+  getUpcomingMatches: (limit = 20) => fetchJSON<MatchWithTeams[]>(`/matches/upcoming?limit=${limit}`),
   updateMatchResult: (id: number, homeScore: number, awayScore: number) =>
-    fetchJSON<Match>(`/matches/${id}/result`, {
+    fetchJSON<MatchWithTeams>(`/matches/${id}/result`, {
       method: 'PUT',
       body: JSON.stringify({ home_score: homeScore, away_score: awayScore }),
     }),
 
   // Predictions
   getPredictions: () => fetchJSON<MyPrediction[]>('/predictions'),
-  getPredictionStats: () => fetchJSON<any>('/predictions/stats'),
+  getPredictionStats: () => fetchJSON<PredictionStats>('/predictions/stats'),
   savePrediction: (prediction: {
     match_id: number;
-    predicted_home: number;
-    predicted_away: number;
+    predicted_home_score: number;
+    predicted_away_score: number;
+    confidence?: number;
     notes?: string;
   }) =>
     fetchJSON<MyPrediction>('/predictions', {
@@ -50,7 +54,8 @@ export const api = {
     }),
 
   // AI Predictions
-  getAIPrediction: (matchId: number) => fetchJSON<AIPrediction>(`/predictions/ai/${matchId}`),
+  getAIPrediction: (matchId: number, force = false) =>
+    fetchJSON<AIPrediction>(`/predictions/ai/${matchId}${force ? '?force=true' : ''}`),
 
   // Analysis
   getMatchAnalysis: (matchId: number) => fetchJSON<any>(`/analysis/match/${matchId}`),

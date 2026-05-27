@@ -56,15 +56,28 @@ CREATE TABLE IF NOT EXISTS ai_predictions (
     model_used VARCHAR(50),
     predicted_home_score INTEGER,
     predicted_away_score INTEGER,
-    home_win_prob DECIMAL(5,2),
-    draw_prob DECIMAL(5,2),
-    away_win_prob DECIMAL(5,2),
-    confidence_score INTEGER,
+    home_win_prob DECIMAL(5,4),
+    draw_prob DECIMAL(5,4),
+    away_win_prob DECIMAL(5,4),
+    confidence_score DECIMAL(5,4),
     analysis_text TEXT,
     factors JSONB DEFAULT '[]'::jsonb,
+    poisson_home_lambda DECIMAL(6,4) DEFAULT 1.2,
+    poisson_away_lambda DECIMAL(6,4) DEFAULT 1.2,
+    scoreline_matrix JSONB DEFAULT '[]'::jsonb,
     raw_stats JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migración: añadir columnas Poisson si la tabla ya existe
+ALTER TABLE ai_predictions ADD COLUMN IF NOT EXISTS poisson_home_lambda DECIMAL(6,4) DEFAULT 1.2;
+ALTER TABLE ai_predictions ADD COLUMN IF NOT EXISTS poisson_away_lambda DECIMAL(6,4) DEFAULT 1.2;
+ALTER TABLE ai_predictions ADD COLUMN IF NOT EXISTS scoreline_matrix JSONB DEFAULT '[]'::jsonb;
+-- Cambiar precisión de columnas de probabilidad (si se creó antes con DECIMAL(5,2))
+ALTER TABLE ai_predictions ALTER COLUMN home_win_prob TYPE DECIMAL(5,4);
+ALTER TABLE ai_predictions ALTER COLUMN draw_prob TYPE DECIMAL(5,4);
+ALTER TABLE ai_predictions ALTER COLUMN away_win_prob TYPE DECIMAL(5,4);
+ALTER TABLE ai_predictions ALTER COLUMN confidence_score TYPE DECIMAL(5,4);
 
 -- Índices
 CREATE INDEX IF NOT EXISTS idx_matches_stage ON matches(stage);

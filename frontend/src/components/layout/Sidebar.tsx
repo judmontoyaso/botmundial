@@ -44,8 +44,8 @@ export default function Sidebar() {
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent-gold to-accent-amber opacity-0 group-hover:opacity-40 blur-xl transition-opacity duration-500" />
           </div>
           <div>
-            <h1 className="text-lg font-bold gradient-gold-text">BotMundial</h1>
-            <p className="text-[10px] text-text-secondary tracking-wider uppercase">Análisis IA</p>
+            <h1 className="text-lg font-bold gradient-gold-text">ProMundial</h1>
+            <p className="text-[10px] text-text-secondary tracking-wider uppercase">Análisis IA · 2026</p>
           </div>
         </Link>
       </div>

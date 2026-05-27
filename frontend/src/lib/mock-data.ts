@@ -205,12 +205,13 @@ export const mockGroupStandings: GroupStanding[] = buildGroupStandings();
 
 export const mockPredictionStats: PredictionStats = {
   total_predictions: 0,
+  matches_played: 0,
   exact_scores: 0,
-  correct_winner: 0,
+  correct_outcomes: 0,
   wrong: 0,
   total_points: 0,
-  accuracy: 0,
-  points_history: [],
+  accuracy_pct: 0,
+  avg_confidence: 0,
 };
 
 export function getUpcomingMatches(count: number = 5): Match[] {

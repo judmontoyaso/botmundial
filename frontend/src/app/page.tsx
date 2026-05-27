@@ -22,7 +22,6 @@ import {
 } from 'recharts';
 import Link from 'next/link';
 import StatsCard from '@/components/ui/StatsCard';
-import { mockPredictionStats } from '@/lib/mock-data';
 import { api } from '@/lib/api';
 import type { Match } from '@/types';
 
@@ -232,7 +231,7 @@ export default function DashboardPage() {
           </h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={mockPredictionStats.points_history}>
+              <AreaChart data={[]}>  {/* populated once matches are played */}
                 <defs>
                   <linearGradient id="goldGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#d4a853" stopOpacity={0.3} />

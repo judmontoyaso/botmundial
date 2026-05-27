@@ -22,6 +22,13 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 def seed_database():
     print("🌱 Iniciando la migración de datos a Supabase...")
 
+    # Limpiar predicciones AI cacheadas (se regeneran con el nuevo modelo Poisson)
+    try:
+        supabase.table("ai_predictions").delete().neq("id", 0).execute()
+        print("🧹 Caché de predicciones AI eliminada (se regenerará con modelo Poisson).")
+    except Exception as e:
+        print(f"⚠️  No se pudo limpiar ai_predictions: {e}")
+
     # 1. Insert Teams
     try:
         with open("app/data/teams.json", "r", encoding="utf-8") as f:

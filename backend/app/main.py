@@ -1,4 +1,4 @@
-"""BotMundial – FastAPI application entry point."""
+"""ProMundial – FastAPI application entry point."""
 
 from contextlib import asynccontextmanager
 import logging
@@ -30,14 +30,10 @@ async def lifespan(app: FastAPI):
     settings = get_settings()
     logger.info("Starting %s v%s", settings.APP_NAME, settings.APP_VERSION)
 
-    # Pre-load data at startup
-    data_service.load_teams()
-    data_service.load_matches()
-    logger.info(
-        "Loaded %d teams and %d matches",
-        len(data_service.load_teams()),
-        len(data_service.load_matches()),
-    )
+    # Pre-load data into in-memory cache at startup (avoids cold-start latency)
+    teams = data_service.load_teams()
+    matches = data_service.load_matches()
+    logger.info("Loaded %d teams and %d matches into cache", len(teams), len(matches))
 
     yield  # Application runs here
 
@@ -54,7 +50,7 @@ app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
     description=(
-        "Backend API for BotMundial – a World Cup 2026 analysis dashboard "
+        "Backend API for ProMundial – a World Cup 2026 analysis dashboard "
         "with AI-powered predictions and polla scoring."
     ),
     lifespan=lifespan,

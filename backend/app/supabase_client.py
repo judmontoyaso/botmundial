@@ -17,4 +17,4 @@ if settings.SUPABASE_URL and settings.SUPABASE_KEY and settings.SUPABASE_URL != 
     except Exception as e:
         logger.error(f"Failed to initialize Supabase client: {e}")
 else:
-    logger.warning("Supabase URL/Key not configured or using placeholders. Supabase operations will be skipped or mock data will be used.")
+    logger.warning("Supabase URL/Key not configured. The API requires Supabase — set SUPABASE_URL and SUPABASE_KEY in .env")

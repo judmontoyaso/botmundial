@@ -45,17 +45,39 @@ export interface Match {
 export interface MyPrediction {
   id: number;
   match_id: number;
+  predicted_home_score: number;
+  predicted_away_score: number;
+  confidence: number;
+  notes: string | null;
+  points_earned: number | null;
+  created_at: string;
+}
+
+export interface MatchInner {
+  id: number;
+  match_number: number;
+  stage: string;
+  group_letter: string | null;
+  home_team_code: string;
+  away_team_code: string;
+  match_date: string;
+  venue: string;
+  city: string;
+  home_score: number | null;
+  away_score: number | null;
+  status: string;
+}
+
+export interface MatchWithTeams {
+  match: MatchInner;
   home_team_name: string;
   away_team_name: string;
-  home_flag: string;
-  away_flag: string;
-  predicted_home: number;
-  predicted_away: number;
-  actual_home: number | null;
-  actual_away: number | null;
-  points: number | null;
-  notes: string;
-  created_at: string;
+  home_team_flag: string;
+  away_team_flag: string;
+  home_team_flag_url?: string;
+  away_team_flag_url?: string;
+  home_team_ranking: number;
+  away_team_ranking: number;
 }
 
 export interface AIPrediction {
@@ -73,6 +95,9 @@ export interface AIPrediction {
   analysis_text: string;
   factors: string[];
   date?: string;
+  poisson_home_lambda?: number;
+  poisson_away_lambda?: number;
+  scoreline_matrix?: number[][];
 }
 
 export interface AnalysisFactor {
@@ -104,16 +129,11 @@ export interface GroupTeamRow {
 
 export interface PredictionStats {
   total_predictions: number;
+  matches_played: number;
   exact_scores: number;
-  correct_winner: number;
+  correct_outcomes: number;
   wrong: number;
   total_points: number;
-  accuracy: number;
-  points_history: PointsHistoryEntry[];
-}
-
-export interface PointsHistoryEntry {
-  matchday: number;
-  points: number;
-  cumulative: number;
+  accuracy_pct: number;
+  avg_confidence: number;
 }

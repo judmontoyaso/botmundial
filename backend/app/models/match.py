@@ -52,6 +52,8 @@ class MatchWithTeams(BaseModel):
     away_team_name: str
     home_team_flag: str
     away_team_flag: str
+    home_team_flag_url: str = ""
+    away_team_flag_url: str = ""
     home_team_ranking: int
     away_team_ranking: int
 
