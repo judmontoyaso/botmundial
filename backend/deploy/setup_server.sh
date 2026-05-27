@@ -10,7 +10,7 @@
 set -e
 
 REPO_URL="https://github.com/judmontoyaso/botmundial.git"
-INSTALL_DIR="/opt/promundial"
+INSTALL_DIR="/opt/botmundial"
 SERVICE_USER="promundial"
 PYTHON_MIN="3.10"
 

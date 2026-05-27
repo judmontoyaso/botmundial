@@ -7,8 +7,8 @@ Wants=network.target
 Type=simple
 User=promundial
 Group=promundial
-WorkingDirectory=/opt/promundial/backend
-ExecStart=/opt/promundial/backend/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
+WorkingDirectory=/opt/botmundial/backend
+ExecStart=/opt/botmundial/backend/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=on-failure
 RestartSec=5
@@ -17,7 +17,7 @@ StandardError=journal
 SyslogIdentifier=promundial-api
 
 # Load .env variables
-EnvironmentFile=/opt/promundial/backend/.env
+EnvironmentFile=/opt/botmundial/backend/.env
 
 [Install]
 WantedBy=multi-user.target
