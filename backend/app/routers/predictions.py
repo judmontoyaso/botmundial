@@ -59,6 +59,14 @@ async def prediction_stats():
     return PredictionResponse(data=stats, count=1)
 
 
+@router.delete("/{prediction_id}", status_code=204)
+async def delete_prediction(prediction_id: int):
+    """Delete a user prediction by its ID."""
+    deleted = data_service.delete_prediction(prediction_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail=f"Prediction {prediction_id} not found")
+
+
 @router.get("/ai/{match_id}", response_model=PredictionResponse)
 async def get_ai_prediction(
     match_id: int,

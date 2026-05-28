@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Users, Loader2, Zap, Shield } from 'lucide-react';
 import { api } from '@/lib/api';
+import FlagImg from '@/components/ui/FlagImg';
 
 const container = {
   hidden: { opacity: 0 },
@@ -217,7 +218,7 @@ export default function GroupsPage() {
                       {/* Main row */}
                       <div className="grid grid-cols-[1fr_28px_28px_28px_28px_32px] gap-1 items-center py-1.5 px-1 hover:bg-bg-tertiary/40 transition-colors rounded-r-lg">
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="text-base flex-shrink-0">{team.flag}</span>
+                          <FlagImg emoji={team.flag} teamCode={team.team_code} name={team.team_name} size="sm" />
                           <div className="flex flex-col min-w-0">
                             <span className="text-xs font-medium text-text-primary truncate leading-tight">
                               {team.team_name}
@@ -255,7 +256,7 @@ export default function GroupsPage() {
                 <div className="flex items-center justify-between text-[10px] text-text-secondary px-1">
                   {group.teams.map((team) => (
                     <span key={team.team_code} className="flex items-center gap-0.5">
-                      <span>{team.flag}</span>
+                      <FlagImg emoji={team.flag} teamCode={team.team_code} name={team.team_name} size="sm" />
                       <span
                         className={
                           team.goal_difference > 0

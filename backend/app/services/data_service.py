@@ -251,6 +251,12 @@ def get_predictions() -> list[MyPrediction]:
     return [_prediction_from_row(p) for p in response.data]
 
 
+def delete_prediction(prediction_id: int) -> bool:
+    _require_supabase()
+    res = supabase.table("my_predictions").delete().eq("id", prediction_id).execute()
+    return bool(res.data)
+
+
 def get_prediction_by_match(match_id: int) -> Optional[MyPrediction]:
     _require_supabase()
     response = supabase.table("my_predictions").select("*").eq("match_id", match_id).execute()

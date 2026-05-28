@@ -53,6 +53,11 @@ export const api = {
       body: JSON.stringify(prediction),
     }),
 
+  deletePrediction: (id: number) =>
+    fetch(`${BASE_URL}/predictions/${id}`, { method: 'DELETE' }).then(r => {
+      if (!r.ok) throw new Error(`API Error: ${r.status}`);
+    }),
+
   // AI Predictions
   getAIPrediction: (matchId: number, force = false) =>
     fetchJSON<AIPrediction>(`/predictions/ai/${matchId}${force ? '?force=true' : ''}`),

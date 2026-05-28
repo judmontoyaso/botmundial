@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Clock } from 'lucide-react';
 import type { Match } from '@/types';
+import FlagImg from '@/components/ui/FlagImg';
 
 interface MatchCardProps {
   match: Match;
@@ -57,8 +58,16 @@ export default function MatchCard({ match, compact = false, onClick, delay = 0 }
         {/* Teams and Score */}
         <div className="flex items-center justify-between gap-3">
           {/* Home team */}
-          <div className="flex-1 text-center">
-            <div className={`${compact ? 'text-2xl' : 'text-3xl'} mb-1`}>{match.home_flag}</div>
+          <div className="flex-1 text-center flex flex-col items-center">
+            <div className="mb-1">
+              <FlagImg
+                url={(match as any).home_flag_url}
+                emoji={match.home_flag}
+                teamCode={match.home_team}
+                name={match.home_team_name}
+                size={compact ? 'sm' : 'md'}
+              />
+            </div>
             <p className={`font-semibold text-text-primary ${compact ? 'text-xs' : 'text-sm'} leading-tight`}>
               {match.home_team_name}
             </p>
@@ -78,8 +87,16 @@ export default function MatchCard({ match, compact = false, onClick, delay = 0 }
           </div>
 
           {/* Away team */}
-          <div className="flex-1 text-center">
-            <div className={`${compact ? 'text-2xl' : 'text-3xl'} mb-1`}>{match.away_flag}</div>
+          <div className="flex-1 text-center flex flex-col items-center">
+            <div className="mb-1">
+              <FlagImg
+                url={(match as any).away_flag_url}
+                emoji={match.away_flag}
+                teamCode={match.away_team}
+                name={match.away_team_name}
+                size={compact ? 'sm' : 'md'}
+              />
+            </div>
             <p className={`font-semibold text-text-primary ${compact ? 'text-xs' : 'text-sm'} leading-tight`}>
               {match.away_team_name}
             </p>

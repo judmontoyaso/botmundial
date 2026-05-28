@@ -11,6 +11,7 @@ import {
   Plus,
   Loader2,
   AlertCircle,
+  Trash2,
 } from 'lucide-react';
 import {
   LineChart,
@@ -67,6 +68,7 @@ export default function TrackerPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formMatchId, setFormMatchId] = useState('');
   const [formHome, setFormHome] = useState('');
@@ -130,6 +132,20 @@ export default function TrackerPage() {
       return { matchday: i + 1, points: pts, cumulative };
     });
   }, [resolvedPredictions]);
+
+  const handleDelete = async (predId: number) => {
+    setDeletingId(predId);
+    try {
+      await api.deletePrediction(predId);
+      const [preds, statsData] = await Promise.all([api.getPredictions(), api.getPredictionStats()]);
+      setPredictions(preds);
+      setStats(statsData);
+    } catch (err) {
+      console.error('Error eliminando predicción:', err);
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -386,14 +402,26 @@ export default function TrackerPage() {
                   transition={{ delay: idx * 0.05 }}
                   className="flex items-center justify-between p-3 rounded-xl bg-bg-tertiary/30 hover:bg-bg-tertiary/50 transition-colors"
                 >
-                  <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex items-center gap-3 flex-wrap flex-1 min-w-0">
                     <span className="text-lg">{match?.home_team_flag ?? '🏳️'}</span>
                     <span className="text-sm font-medium text-text-primary">{match?.home_team_name ?? `Partido #${pred.match_id}`}</span>
                     <span className="text-sm font-bold text-accent-gold">{pred.predicted_home_score} - {pred.predicted_away_score}</span>
                     <span className="text-sm font-medium text-text-primary">{match?.away_team_name ?? ''}</span>
                     <span className="text-lg">{match?.away_team_flag ?? ''}</span>
                   </div>
-                  <PointsBadge points={pred.points_earned} />
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <PointsBadge points={pred.points_earned} />
+                    <button
+                      onClick={() => handleDelete(pred.id)}
+                      disabled={deletingId === pred.id}
+                      className="p-1.5 rounded-lg text-text-secondary hover:text-danger hover:bg-danger/10 transition-colors disabled:opacity-40"
+                      title="Eliminar predicción"
+                    >
+                      {deletingId === pred.id
+                        ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        : <Trash2 className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
                 </motion.div>
               );
             })}
