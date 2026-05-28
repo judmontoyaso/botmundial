@@ -13,6 +13,22 @@ from app.services import predictor as predictor_service
 router = APIRouter(prefix="/analysis", tags=["Analysis"])
 
 
+@router.get("/match/{match_id}/stats")
+async def match_stats_quick(match_id: int):
+    """Fast statistical-only prediction (no LLM). Used by the match card modal."""
+    match = data_service.get_match_by_id(match_id)
+    if match is None:
+        raise HTTPException(status_code=404, detail=f"Match {match_id} not found")
+
+    home = data_service.get_team_by_code(match.home_team_code)
+    away = data_service.get_team_by_code(match.away_team_code)
+    if not home or not away:
+        raise HTTPException(status_code=404, detail="Team data not found")
+
+    stat_pred = analysis_service.predict_match_statistical(home, away, match)
+    return {"success": True, "statistical_prediction": stat_pred}
+
+
 @router.get("/match/{match_id}")
 async def match_analysis(match_id: int):
     """Full match analysis combining statistical + LLM insights."""

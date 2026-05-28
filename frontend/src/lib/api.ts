@@ -64,6 +64,7 @@ export const api = {
 
   // Analysis
   getMatchAnalysis: (matchId: number) => fetchJSON<any>(`/analysis/match/${matchId}`),
+  getMatchStats: (matchId: number) => fetchJSON<any>(`/analysis/match/${matchId}/stats`),
   getTeamAnalysis: (code: string) => fetchJSON<any>(`/analysis/team/${code}`),
   getGroupAnalysis: (letter: string) => fetchJSON<any>(`/analysis/group/${letter}`),
   getTournamentSimulation: (n = 5000) => fetchJSON<any>(`/analysis/tournament/simulation?n=${n}`),

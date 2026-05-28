@@ -116,7 +116,7 @@ export default function MatchStatsModal({ match, onClose }: MatchStatsModalProps
     setLoading(true);
     setAnalysis(null);
     try {
-      const data = await api.getMatchAnalysis(id);
+      const data = await api.getMatchStats(id);
       setAnalysis(data);
     } catch {
       setAnalysis(null);
