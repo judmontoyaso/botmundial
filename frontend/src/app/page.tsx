@@ -10,6 +10,7 @@ import {
   Brain,
   ChevronRight,
   Sparkles,
+  GitBranch,
 } from 'lucide-react';
 import {
   AreaChart,
@@ -112,6 +113,7 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null);
   const [insightText, setInsightText] = useState('');
   const [insightLoading, setInsightLoading] = useState(true);
+  const [favorites, setFavorites] = useState<any[]>([]);
 
   useEffect(() => {
     async function loadDashboard() {
@@ -169,6 +171,11 @@ export default function DashboardPage() {
           return { group: g.letter, teams: teamsWithFlags };
         });
         setHighlightedGroups(hGroups);
+
+        // Load Monte Carlo favorites non-blocking (1000 sims for speed on dashboard)
+        api.getTournamentSimulation(1000).then((sim: any) => {
+          setFavorites((sim.teams ?? []).slice(0, 5));
+        }).catch(() => {});
       } catch (error) {
         console.error('Error loading dashboard:', error);
       } finally {
@@ -352,6 +359,42 @@ export default function DashboardPage() {
           </div>
         </motion.div>
       </div>
+
+      {/* Row 4: Monte Carlo Favorites */}
+      {favorites.length > 0 && (
+        <motion.div variants={item} className="rounded-2xl border border-accent-gold/10 bg-bg-secondary/60 backdrop-blur-xl p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-text-primary flex items-center gap-2">
+              <GitBranch className="w-5 h-5 text-accent-gold" />
+              Favoritos al Título
+              <span className="text-[10px] text-text-secondary/60 font-normal ml-1">Monte Carlo</span>
+            </h2>
+            <Link href="/bracket" className="text-xs text-accent-gold hover:text-accent-amber transition-colors flex items-center gap-1">
+              Simulación completa <ChevronRight className="w-3 h-3" />
+            </Link>
+          </div>
+          <div className="space-y-2.5">
+            {favorites.map((team, idx) => (
+              <div key={team.team_code} className="flex items-center gap-3">
+                <span className="text-xs font-bold text-text-secondary/40 w-4 text-center">{idx + 1}</span>
+                <FlagImg emoji={team.flag_emoji} teamCode={team.team_code} name={team.team_name} size="sm" />
+                <span className="text-sm text-text-primary flex-1 min-w-0 truncate">{team.team_name}</span>
+                <div className="flex items-center gap-2 min-w-[120px]">
+                  <div className="flex-1 h-1.5 bg-bg-tertiary/50 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-accent-gold rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.min((team.p_champion / (favorites[0]?.p_champion || 1)) * 100, 100)}%` }}
+                      transition={{ duration: 0.8, delay: 0.3 + idx * 0.1, ease: 'easeOut' }}
+                    />
+                  </div>
+                  <span className="text-xs font-bold text-accent-gold tabular-nums w-10 text-right">{team.p_champion}%</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 }

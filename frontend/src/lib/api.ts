@@ -66,4 +66,14 @@ export const api = {
   getMatchAnalysis: (matchId: number) => fetchJSON<any>(`/analysis/match/${matchId}`),
   getTeamAnalysis: (code: string) => fetchJSON<any>(`/analysis/team/${code}`),
   getGroupAnalysis: (letter: string) => fetchJSON<any>(`/analysis/group/${letter}`),
+  getTournamentSimulation: (n = 5000) => fetchJSON<any>(`/analysis/tournament/simulation?n=${n}`),
+
+  // Player absences
+  getTeamAbsences: (code: string) => fetchJSON<any>(`/teams/${code}/absences`),
+  addTeamAbsence: (code: string, data: { player_name: string; position?: string; importance?: number; reason?: string }) =>
+    fetchJSON<any>(`/teams/${code}/absences`, { method: 'POST', body: JSON.stringify(data) }),
+  deleteAbsence: (id: number) =>
+    fetch(`${BASE_URL}/teams/absences/${id}`, { method: 'DELETE' }).then(r => {
+      if (!r.ok) throw new Error(`API Error: ${r.status}`);
+    }),
 };

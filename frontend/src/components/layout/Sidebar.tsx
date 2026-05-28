@@ -13,6 +13,7 @@ import {
   Menu,
   X,
   Trophy,
+  GitBranch,
 } from 'lucide-react';
 
 const navItems = [
@@ -20,6 +21,7 @@ const navItems = [
   { href: '/matches', label: 'Partidos', icon: Calendar },
   { href: '/predictions', label: 'Predicciones AI', icon: Brain },
   { href: '/groups', label: 'Grupos', icon: Users },
+  { href: '/bracket', label: 'Simulación', icon: GitBranch },
   { href: '/tracker', label: 'Mi Polla', icon: Target },
 ];
 

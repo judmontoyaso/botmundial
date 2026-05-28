@@ -334,6 +334,79 @@ def delete_ai_prediction(match_id: int) -> None:
     supabase.table("ai_predictions").delete().eq("match_id", match_id).execute()
 
 
+# ---------------------------------------------------------------------------
+# Head-to-head records
+# ---------------------------------------------------------------------------
+
+def get_all_h2h() -> list[dict]:
+    """Fetch all H2H records (used for bulk pre-fetch in simulation)."""
+    _require_supabase()
+    res = supabase.table("head_to_head").select("*").execute()
+    return res.data or []
+
+
+def get_h2h(team_a: str, team_b: str) -> Optional[dict]:
+    """Get H2H record for a specific matchup (either ordering)."""
+    _require_supabase()
+    res = supabase.table("head_to_head").select("*").or_(
+        f"and(team_a_code.eq.{team_a.upper()},team_b_code.eq.{team_b.upper()}),"
+        f"and(team_a_code.eq.{team_b.upper()},team_b_code.eq.{team_a.upper()})"
+    ).limit(1).execute()
+    return res.data[0] if res.data else None
+
+
+# ---------------------------------------------------------------------------
+# Player absences
+# ---------------------------------------------------------------------------
+
+def get_all_active_absences() -> list[dict]:
+    """Fetch all active absences (bulk pre-fetch for simulation)."""
+    _require_supabase()
+    res = supabase.table("player_absences").select("*").eq("is_active", True).execute()
+    return res.data or []
+
+
+def get_active_absences(team_code: str) -> list[dict]:
+    """Get active absences for a single team."""
+    _require_supabase()
+    res = supabase.table("player_absences").select("*").eq("team_code", team_code.upper()).eq("is_active", True).execute()
+    return res.data or []
+
+
+def add_player_absence(
+    team_code: str,
+    player_name: str,
+    position: Optional[str] = None,
+    importance: int = 2,
+    reason: str = "injury",
+) -> dict:
+    _require_supabase()
+    res = supabase.table("player_absences").insert({
+        "team_code": team_code.upper(),
+        "player_name": player_name,
+        "position": position,
+        "importance": importance,
+        "reason": reason,
+        "is_active": True,
+    }).execute()
+    return res.data[0]
+
+
+def delete_player_absence(absence_id: int) -> bool:
+    _require_supabase()
+    res = supabase.table("player_absences").delete().eq("id", absence_id).execute()
+    return bool(res.data)
+
+
+def toggle_player_absence(absence_id: int, is_active: bool) -> bool:
+    _require_supabase()
+    res = supabase.table("player_absences").update({
+        "is_active": is_active,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }).eq("id", absence_id).execute()
+    return bool(res.data)
+
+
 def save_ai_prediction(pred: AIPrediction) -> None:
     _require_supabase()
     db_data = {

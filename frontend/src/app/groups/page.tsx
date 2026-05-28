@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Users, Zap, Shield } from 'lucide-react';
+import Link from 'next/link';
 import { api } from '@/lib/api';
 import FlagImg from '@/components/ui/FlagImg';
 import LoadingBall from '@/components/ui/LoadingBall';
@@ -215,7 +216,7 @@ export default function GroupsPage() {
                     <div key={team.team_code} className={`border-l-2 ${borderColor} ${bgColor} rounded-r-lg`}>
                       {/* Main row */}
                       <div className="grid grid-cols-[1fr_28px_28px_28px_28px_32px] gap-1 items-center py-1.5 px-1 hover:bg-bg-tertiary/40 transition-colors rounded-r-lg">
-                        <div className="flex items-center gap-1.5 min-w-0">
+                        <Link href={`/teams/${team.team_code}`} className="flex items-center gap-1.5 min-w-0 hover:opacity-80 transition-opacity">
                           <FlagImg emoji={team.flag} teamCode={team.team_code} name={team.team_name} size="sm" />
                           <div className="flex flex-col min-w-0">
                             <span className="text-xs font-medium text-text-primary truncate leading-tight">
@@ -223,7 +224,7 @@ export default function GroupsPage() {
                             </span>
                             <ELOBadge elo={team.elo} />
                           </div>
-                        </div>
+                        </Link>
                         <span className="text-[11px] text-text-secondary text-center">{team.played}</span>
                         <span className="text-[11px] text-text-secondary text-center">{team.won}</span>
                         <span className="text-[11px] text-text-secondary text-center">{team.drawn}</span>

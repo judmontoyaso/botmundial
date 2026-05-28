@@ -1,6 +1,9 @@
 """Router for statistical / AI analysis endpoints."""
 
-from fastapi import APIRouter, HTTPException
+import time
+from functools import lru_cache
+
+from fastapi import APIRouter, HTTPException, Query
 
 from app.services import analysis as analysis_service
 from app.services import data_service
@@ -129,3 +132,28 @@ async def group_analysis(letter: str):
         "match_predictions": match_predictions,
         "predicted_standings": [s.model_dump() for s in standings],
     }
+
+
+# ---------------------------------------------------------------------------
+# Monte Carlo tournament simulation — cached for 1 hour
+# ---------------------------------------------------------------------------
+
+_sim_cache: dict = {}
+_SIM_TTL = 3600  # seconds
+
+
+@router.get("/tournament/simulation")
+async def tournament_simulation(n: int = Query(default=5000, ge=500, le=20000)):
+    """
+    Run Monte Carlo simulation of the full World Cup 2026.
+    Returns probability of champion / finalist / top-4 / top-8 / group advance per team.
+    Result is cached for 1 hour.
+    """
+    cache_key = n
+    cached = _sim_cache.get(cache_key)
+    if cached and (time.time() - cached["ts"]) < _SIM_TTL:
+        return {"success": True, **cached["data"]}
+
+    result = analysis_service.run_tournament_simulation(n_simulations=n)
+    _sim_cache[cache_key] = {"ts": time.time(), "data": result}
+    return {"success": True, **result}
