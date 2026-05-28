@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Brain, Zap, ChevronDown, ChevronUp, CheckCircle2, AlertCircle, TrendingUp, RefreshCw, BookmarkPlus } from 'lucide-react';
+import { Brain, Zap, ChevronDown, ChevronUp, CheckCircle2, AlertCircle, Loader2, TrendingUp, RefreshCw, BookmarkPlus } from 'lucide-react';
 import LoadingBall from '@/components/ui/LoadingBall';
 import StatsCard from '@/components/ui/StatsCard';
 import ProbabilityBar from '@/components/charts/ProbabilityBar';
