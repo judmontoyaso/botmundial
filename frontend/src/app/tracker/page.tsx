@@ -9,10 +9,10 @@ import {
   Award,
   TrendingUp,
   Plus,
-  Loader2,
   AlertCircle,
   Trash2,
 } from 'lucide-react';
+import LoadingBall from '@/components/ui/LoadingBall';
 import {
   LineChart,
   Line,
@@ -180,10 +180,7 @@ export default function TrackerPage() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto h-[60vh] flex flex-col items-center justify-center gap-4">
-        <Loader2 className="w-12 h-12 text-accent-gold animate-spin" />
-        <p className="text-text-secondary font-medium animate-pulse">
-          Cargando tu polla mundialista...
-        </p>
+        <LoadingBall text="Cargando tu polla mundialista..." />
       </div>
     );
   }

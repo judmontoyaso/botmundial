@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Brain, Zap, ChevronDown, ChevronUp, CheckCircle2, AlertCircle, Loader2, TrendingUp, RefreshCw, BookmarkPlus } from 'lucide-react';
+import { Brain, Zap, ChevronDown, ChevronUp, CheckCircle2, AlertCircle, TrendingUp, RefreshCw, BookmarkPlus } from 'lucide-react';
+import LoadingBall from '@/components/ui/LoadingBall';
 import StatsCard from '@/components/ui/StatsCard';
 import ProbabilityBar from '@/components/charts/ProbabilityBar';
 import ScorelineMatrix from '@/components/charts/ScorelineMatrix';
@@ -145,10 +146,7 @@ export default function PredictionsPage() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto h-[60vh] flex flex-col items-center justify-center gap-4">
-        <Loader2 className="w-12 h-12 text-accent-gold animate-spin" />
-        <p className="text-text-secondary font-medium animate-pulse">
-          Cargando predicciones Poisson + ELO...
-        </p>
+        <LoadingBall text="Cargando predicciones Poisson + ELO..." />
       </div>
     );
   }

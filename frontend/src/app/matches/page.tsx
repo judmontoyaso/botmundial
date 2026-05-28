@@ -4,6 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Search, Filter } from 'lucide-react';
 import MatchCard from '@/components/ui/MatchCard';
+import LoadingBall from '@/components/ui/LoadingBall';
 import { api } from '@/lib/api';
 import type { Match } from '@/types';
 
@@ -149,7 +150,7 @@ export default function MatchesPage() {
       {/* Matches Grid */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-gold"></div>
+          <LoadingBall text="Cargando partidos..." />
         </div>
       ) : filteredMatches.length > 0 ? (
         <motion.div

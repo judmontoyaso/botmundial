@@ -41,8 +41,8 @@ export default function Sidebar() {
           <img
             src="/logo.png"
             alt="ProMundial"
-            width={80}
-            height={80}
+            width={60}
+            height={60}
             className="flex-shrink-0 drop-shadow-[0_0_12px_rgba(212,168,83,0.5)] group-hover:drop-shadow-[0_0_22px_rgba(212,168,83,0.85)] group-hover:scale-105 transition-all duration-300"
           />
           <div className="min-w-0">

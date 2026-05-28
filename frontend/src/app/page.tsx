@@ -23,6 +23,7 @@ import {
 import Link from 'next/link';
 import StatsCard from '@/components/ui/StatsCard';
 import FlagImg from '@/components/ui/FlagImg';
+import LoadingBall from '@/components/ui/LoadingBall';
 import { api } from '@/lib/api';
 import type { Match } from '@/types';
 
@@ -180,8 +181,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto h-[60vh] flex flex-col items-center justify-center gap-4">
-        <div className="w-12 h-12 border-t-2 border-r-2 border-accent-gold rounded-full animate-spin"></div>
-        <p className="text-text-secondary font-medium animate-pulse">Cargando Dashboard en tiempo real...</p>
+        <LoadingBall text="Cargando Dashboard en tiempo real..." />
       </div>
     );
   }

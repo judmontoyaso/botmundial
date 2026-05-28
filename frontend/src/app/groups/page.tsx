@@ -2,9 +2,10 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Users, Loader2, Zap, Shield } from 'lucide-react';
+import { Users, Zap, Shield } from 'lucide-react';
 import { api } from '@/lib/api';
 import FlagImg from '@/components/ui/FlagImg';
+import LoadingBall from '@/components/ui/LoadingBall';
 
 const container = {
   hidden: { opacity: 0 },
@@ -140,10 +141,7 @@ export default function GroupsPage() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto h-[60vh] flex flex-col items-center justify-center gap-4">
-        <Loader2 className="w-12 h-12 text-accent-gold animate-spin" />
-        <p className="text-text-secondary font-medium animate-pulse">
-          Calculando pronósticos con modelo Poisson + ELO...
-        </p>
+        <LoadingBall text="Calculando pronósticos con modelo Poisson + ELO..." />
       </div>
     );
   }
