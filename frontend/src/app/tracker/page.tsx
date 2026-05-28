@@ -9,6 +9,7 @@ import {
   Award,
   TrendingUp,
   Plus,
+  Loader2,
   AlertCircle,
   Trash2,
 } from 'lucide-react';

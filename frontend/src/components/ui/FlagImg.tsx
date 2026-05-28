@@ -8,13 +8,14 @@ interface FlagImgProps {
   emoji?: string;
   teamCode?: string;
   name: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
 const sizeMap = {
-  sm: { img: 'w-7 h-5', emoji: 'text-xl' },
-  md: { img: 'w-9 h-6', emoji: 'text-3xl' },
-  lg: { img: 'w-12 h-8', emoji: 'text-4xl' },
+  sm: { img: 'w-7 h-5',   emoji: 'text-xl' },
+  md: { img: 'w-9 h-6',   emoji: 'text-3xl' },
+  lg: { img: 'w-12 h-8',  emoji: 'text-4xl' },
+  xl: { img: 'w-16 h-11', emoji: 'text-5xl' },
 };
 
 export default function FlagImg({ url, emoji, teamCode, name, size = 'md' }: FlagImgProps) {
