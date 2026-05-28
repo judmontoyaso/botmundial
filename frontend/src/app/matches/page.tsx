@@ -30,10 +30,14 @@ export default function MatchesPage() {
         // El backend retorna MatchWithTeams, lo aplanamos para que coincida con el frontend Match type
         const formattedMatches = (data as any[]).map(item => ({
           ...item.match,
+          home_team: item.match.home_team_code,
+          away_team: item.match.away_team_code,
           home_team_name: item.home_team_name,
           away_team_name: item.away_team_name,
           home_flag: item.home_team_flag,
           away_flag: item.away_team_flag,
+          home_flag_url: item.home_team_flag_url ?? '',
+          away_flag_url: item.away_team_flag_url ?? '',
           date: item.match.match_date ? item.match.match_date.substring(0, 10) : '',
           time: item.match.match_date ? item.match.match_date.substring(11, 16) : '',
           group: item.match.group_letter,

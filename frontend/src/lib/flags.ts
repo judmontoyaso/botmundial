@@ -20,6 +20,12 @@ const FIFA_TO_ISO2: Record<string, string> = {
   SYR: 'SY', YEM: 'YE', OMA: 'OM', KUW: 'KW', BHR: 'BH',
 };
 
+export function getFlagUrl(teamCode: string): string {
+  if (!teamCode) return '';
+  const iso2 = FIFA_TO_ISO2[teamCode.toUpperCase()] || teamCode.slice(0, 2);
+  return `https://flagcdn.com/w40/${iso2.toLowerCase()}.png`;
+}
+
 export function getFlagEmoji(teamCode: string): string {
   if (!teamCode) return '🏳️';
   const iso2 = FIFA_TO_ISO2[teamCode.toUpperCase()] || teamCode.slice(0, 2).toUpperCase();

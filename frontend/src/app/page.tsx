@@ -125,6 +125,8 @@ export default function DashboardPage() {
 
         const formattedMatches = (matchesData as any[]).map(item => ({
           ...item.match,
+          home_team: item.match.home_team_code,
+          away_team: item.match.away_team_code,
           home_team_name: item.home_team_name,
           away_team_name: item.away_team_name,
           home_flag: item.home_team_flag,

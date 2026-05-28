@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { getFlagEmoji } from '@/lib/flags';
+import { getFlagUrl, getFlagEmoji } from '@/lib/flags';
 
 interface FlagImgProps {
   url?: string;
@@ -12,19 +12,21 @@ interface FlagImgProps {
 }
 
 const sizeMap = {
-  sm: { img: 'w-7 h-5', emoji: 'text-2xl' },
+  sm: { img: 'w-7 h-5', emoji: 'text-xl' },
   md: { img: 'w-9 h-6', emoji: 'text-3xl' },
   lg: { img: 'w-12 h-8', emoji: 'text-4xl' },
 };
 
 export default function FlagImg({ url, emoji, teamCode, name, size = 'md' }: FlagImgProps) {
+  // Always prefer a real image: explicit url → derive from teamCode → emoji fallback
+  const imageUrl = url || (teamCode ? getFlagUrl(teamCode) : '');
   const [imgFailed, setImgFailed] = useState(false);
   const { img, emoji: emojiClass } = sizeMap[size];
 
-  if (url && !imgFailed) {
+  if (imageUrl && !imgFailed) {
     return (
       <img
-        src={url}
+        src={imageUrl}
         alt={name}
         className={`${img} object-cover rounded-sm shadow-sm flex-shrink-0`}
         onError={() => setImgFailed(true)}
@@ -32,6 +34,7 @@ export default function FlagImg({ url, emoji, teamCode, name, size = 'md' }: Fla
     );
   }
 
+  // Emoji fallback (only if image fails or no teamCode)
   const flagChar = emoji || (teamCode ? getFlagEmoji(teamCode) : '🏳️');
   return <span className={`${emojiClass} flex-shrink-0 leading-none`}>{flagChar}</span>;
 }
