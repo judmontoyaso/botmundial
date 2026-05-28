@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -12,7 +13,6 @@ import {
   Target,
   Menu,
   X,
-  Trophy,
 } from 'lucide-react';
 
 const navItems = [
@@ -38,10 +38,13 @@ export default function Sidebar() {
       <div className="px-5 pt-4 pb-4 border-b border-accent-gold/10">
         <Link href="/" className="flex items-center gap-3 group" onClick={() => setMobileOpen(false)}>
           <div className="relative flex-shrink-0">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent-gold via-accent-amber to-yellow-600 flex items-center justify-center shadow-lg shadow-accent-gold/30 group-hover:shadow-accent-gold/50 transition-shadow duration-300">
-              <Trophy className="w-6 h-6 text-bg-primary drop-shadow-sm" />
-            </div>
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent-gold to-accent-amber opacity-0 group-hover:opacity-50 blur-xl transition-opacity duration-500" />
+            <Image
+              src="/logo.png"
+              alt="ProMundial"
+              width={48}
+              height={48}
+              className="drop-shadow-[0_0_8px_rgba(212,168,83,0.5)] group-hover:drop-shadow-[0_0_14px_rgba(212,168,83,0.8)] transition-all duration-300"
+            />
           </div>
           <div className="min-w-0">
             <h1 className="text-xl font-extrabold gradient-gold-text leading-tight tracking-tight">ProMundial</h1>
