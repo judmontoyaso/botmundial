@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Search, Filter } from 'lucide-react';
+import { Calendar, Search, Filter, RefreshCw } from 'lucide-react';
 import MatchCard from '@/components/ui/MatchCard';
 import LoadingBall from '@/components/ui/LoadingBall';
 import MatchStatsModal from '@/components/ui/MatchStatsModal';
@@ -25,35 +25,51 @@ export default function MatchesPage() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const [syncMsg, setSyncMsg] = useState<string | null>(null);
 
-  React.useEffect(() => {
-    async function loadMatches() {
-      try {
-        const data = await api.getMatches();
-        // El backend retorna MatchWithTeams, lo aplanamos para que coincida con el frontend Match type
-        const formattedMatches = (data as any[]).map(item => ({
-          ...item.match,
-          home_team: item.match.home_team_code,
-          away_team: item.match.away_team_code,
-          home_team_name: item.home_team_name,
-          away_team_name: item.away_team_name,
-          home_flag: item.home_team_flag,
-          away_flag: item.away_team_flag,
-          home_flag_url: item.home_team_flag_url ?? '',
-          away_flag_url: item.away_team_flag_url ?? '',
-          date: item.match.match_date ? item.match.match_date.substring(0, 10) : '',
-          time: item.match.match_date ? item.match.match_date.substring(11, 16) : '',
-          group: item.match.group_letter,
-        }));
-        setMatches(formattedMatches);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
+  const loadMatches = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await api.getMatches();
+      const formattedMatches = (data as any[]).map(item => ({
+        ...item.match,
+        home_team: item.match.home_team_code,
+        away_team: item.match.away_team_code,
+        home_team_name: item.home_team_name,
+        away_team_name: item.away_team_name,
+        home_flag: item.home_team_flag,
+        away_flag: item.away_team_flag,
+        home_flag_url: item.home_team_flag_url ?? '',
+        away_flag_url: item.away_team_flag_url ?? '',
+        date: item.match.match_date ? item.match.match_date.substring(0, 10) : '',
+        time: item.match.match_date ? item.match.match_date.substring(11, 16) : '',
+        group: item.match.group_letter,
+      }));
+      setMatches(formattedMatches);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
     }
-    loadMatches();
   }, []);
+
+  const handleSync = useCallback(async () => {
+    setSyncing(true);
+    setSyncMsg(null);
+    try {
+      const result = await api.runSync();
+      setSyncMsg(result.synced > 0 ? `${result.synced} resultado(s) actualizado(s)` : 'Todo al día');
+      if (result.synced > 0) await loadMatches();
+    } catch {
+      setSyncMsg('Error al sincronizar');
+    } finally {
+      setSyncing(false);
+      setTimeout(() => setSyncMsg(null), 4000);
+    }
+  }, [loadMatches]);
+
+  React.useEffect(() => { loadMatches(); }, [loadMatches]);
 
   const filteredMatches = useMemo(() => {
     let mList = matches;
@@ -106,6 +122,22 @@ export default function MatchesPage() {
             </h1>
             <p className="text-text-secondary text-sm">{loading ? 'Cargando...' : `${matches.length} partidos registrados`}</p>
           </div>
+        </div>
+
+        {/* Sync button */}
+        <div className="flex items-center gap-2">
+          {syncMsg && (
+            <span className="text-xs text-accent-gold/80 animate-fade-in">{syncMsg}</span>
+          )}
+          <button
+            onClick={handleSync}
+            disabled={syncing}
+            title="Sincronizar resultados en vivo"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-bg-tertiary/50 border border-accent-gold/10 text-text-secondary hover:text-accent-gold hover:border-accent-gold/25 transition-all text-xs disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">Sincronizar</span>
+          </button>
         </div>
 
         {/* Search */}

@@ -209,7 +209,7 @@ def update_match_result(match_id: int, home_score: int, away_score: int) -> Opti
     supabase.table("matches").update({
         "home_score": home_score,
         "away_score": away_score,
-        "status": "completed",
+        "status": "finished",
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }).eq("id", match.id).execute()
     _recalculate_prediction_points(match.id, home_score, away_score)
@@ -396,6 +396,59 @@ def delete_player_absence(absence_id: int) -> bool:
     _require_supabase()
     res = supabase.table("player_absences").delete().eq("id", absence_id).execute()
     return bool(res.data)
+
+
+# ---------------------------------------------------------------------------
+# Live-sync: ELO + form updates after real matches
+# ---------------------------------------------------------------------------
+
+def update_team_elo(code: str, new_elo: int) -> None:
+    """Update a team's ELO rating in the stats JSONB column."""
+    _require_supabase()
+    code = code.upper()
+    resp = supabase.table("teams").select("stats").eq("code", code).execute()
+    if not resp.data:
+        return
+    stats = dict(resp.data[0]["stats"] or {})
+    stats["elo_rating"] = new_elo
+    supabase.table("teams").update({"stats": stats}).eq("code", code).execute()
+    if code in _teams_by_code:
+        _teams_by_code[code].stats.elo_rating = new_elo
+    logger.info("ELO updated: %s → %d", code, new_elo)
+
+
+def update_team_form_after_match(code: str, goals_for: int, goals_against: int) -> None:
+    """Append a WC match result and recalculate form stats."""
+    _require_supabase()
+    code = code.upper()
+    resp = supabase.table("teams").select("stats").eq("code", code).execute()
+    if not resp.data:
+        return
+    stats = dict(resp.data[0]["stats"] or {})
+
+    result = "W" if goals_for > goals_against else ("D" if goals_for == goals_against else "L")
+    window: list[str] = list(stats.get("wc_results_window", []))
+    window.append(result)
+    window = window[-10:]
+
+    stats["wc_results_window"] = window
+    stats["wins_last_10"] = window.count("W")
+    stats["draws_last_10"] = window.count("D")
+    stats["losses_last_10"] = window.count("L")
+    stats["form_last_5"] = window[-5:].count("W")
+
+    total_gf = stats.get("wc_goals_for", 0) + goals_for
+    total_ga = stats.get("wc_goals_against", 0) + goals_against
+    n = len(window)
+    stats["wc_goals_for"] = total_gf
+    stats["wc_goals_against"] = total_ga
+    stats["goals_scored_avg"] = round(total_gf / n, 2)
+    stats["goals_conceded_avg"] = round(total_ga / n, 2)
+
+    supabase.table("teams").update({"stats": stats}).eq("code", code).execute()
+    if code in _teams_by_code:
+        del _teams_by_code[code]
+    logger.info("Form updated: %s result=%s window=%s", code, result, window)
 
 
 def toggle_player_absence(absence_id: int, is_active: bool) -> bool:

@@ -68,6 +68,10 @@ export const api = {
   getGroupAnalysis: (letter: string) => fetchJSON<any>(`/analysis/group/${letter}`),
   getTournamentSimulation: (n = 5000) => fetchJSON<any>(`/analysis/tournament/simulation?n=${n}`),
 
+  // Live sync
+  getSyncStatus: () => fetchJSON<any>('/sync/status'),
+  runSync: () => fetchJSON<any>('/sync/run', { method: 'POST' }),
+
   // Player absences
   getTeamAbsences: (code: string) => fetchJSON<any>(`/teams/${code}/absences`),
   addTeamAbsence: (code: string, data: { player_name: string; position?: string; importance?: number; reason?: string }) =>

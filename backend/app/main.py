@@ -1,5 +1,6 @@
 """ProMundial – FastAPI application entry point."""
 
+import asyncio
 from contextlib import asynccontextmanager
 import logging
 
@@ -7,8 +8,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import analysis, matches, predictions, teams
-from app.services import data_service
+from app.routers import analysis, matches, predictions, teams, sync
+from app.services import data_service, livesync
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -24,6 +25,19 @@ logger = logging.getLogger(__name__)
 # Lifespan context manager
 # ---------------------------------------------------------------------------
 
+async def _sync_background_loop() -> None:
+    """Polls API-Football every 5 minutes during the WC window."""
+    await asyncio.sleep(30)  # Let startup finish first
+    while True:
+        try:
+            result = await livesync.sync_wc_results()
+            if result.get("synced", 0) > 0:
+                logger.info("Background sync: %d new results applied", result["synced"])
+        except Exception as exc:
+            logger.error("Background sync error: %s", exc)
+        await asyncio.sleep(300)  # 5-minute interval
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup / shutdown lifecycle for the application."""
@@ -31,12 +45,16 @@ async def lifespan(app: FastAPI):
     logger.info("Starting %s v%s", settings.APP_NAME, settings.APP_VERSION)
 
     # Pre-load data into in-memory cache at startup (avoids cold-start latency)
-    teams = data_service.load_teams()
-    matches = data_service.load_matches()
-    logger.info("Loaded %d teams and %d matches into cache", len(teams), len(matches))
+    _teams = data_service.load_teams()
+    _matches = data_service.load_matches()
+    logger.info("Loaded %d teams and %d matches into cache", len(_teams), len(_matches))
+
+    # Start background sync loop (only meaningful once API key is configured)
+    sync_task = asyncio.create_task(_sync_background_loop())
 
     yield  # Application runs here
 
+    sync_task.cancel()
     logger.info("Shutting down %s", settings.APP_NAME)
 
 
@@ -92,3 +110,4 @@ app.include_router(teams.router, prefix="/api")
 app.include_router(matches.router, prefix="/api")
 app.include_router(predictions.router, prefix="/api")
 app.include_router(analysis.router, prefix="/api")
+app.include_router(sync.router, prefix="/api")
