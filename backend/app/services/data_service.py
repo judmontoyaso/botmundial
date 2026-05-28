@@ -198,6 +198,8 @@ def enrich_match(match: Match) -> MatchWithTeams:
         away_team_flag_url=away.flag_url if away else "",
         home_team_ranking=home.fifa_ranking if home else 0,
         away_team_ranking=away.fifa_ranking if away else 0,
+        home_team_confederation=home.confederation if home else "",
+        away_team_confederation=away.confederation if away else "",
     )
 
 

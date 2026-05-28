@@ -56,6 +56,8 @@ class MatchWithTeams(BaseModel):
     away_team_flag_url: str = ""
     home_team_ranking: int
     away_team_ranking: int
+    home_team_confederation: str = ""
+    away_team_confederation: str = ""
 
 
 class MatchResult(BaseModel):
