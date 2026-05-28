@@ -112,5 +112,5 @@ VALUES
 ('URU', 'FRA',   3,  7,  3),  -- France dominates
 ('URU', 'GER',   2,  5,  2),  -- Germany dominates
 ('USA', 'AUS',   8,  5,  1),  -- USA edge
-('USA', 'MEX',  23, 36, 19),  -- Mexico leads all-time
+('USA', 'MEX',  23, 36, 19)   -- Mexico leads all-time
 ON CONFLICT DO NOTHING;
