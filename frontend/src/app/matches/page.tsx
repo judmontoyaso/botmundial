@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Search, Filter } from 'lucide-react';
 import MatchCard from '@/components/ui/MatchCard';
 import LoadingBall from '@/components/ui/LoadingBall';
+import MatchStatsModal from '@/components/ui/MatchStatsModal';
 import { api } from '@/lib/api';
 import type { Match } from '@/types';
 
@@ -23,6 +24,7 @@ export default function MatchesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
 
   React.useEffect(() => {
     async function loadMatches() {
@@ -161,7 +163,7 @@ export default function MatchesPage() {
           className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
         >
           {filteredMatches.map((match, idx) => (
-            <MatchCard key={match.id} match={match} delay={idx * 0.04} />
+            <MatchCard key={match.id} match={match} delay={idx * 0.04} onClick={() => setSelectedMatch(match)} />
           ))}
         </motion.div>
       ) : (
@@ -175,6 +177,8 @@ export default function MatchesPage() {
           <p className="text-text-secondary/60 text-sm mt-1">Intenta con otra búsqueda</p>
         </motion.div>
       )}
+      {/* Match stats modal */}
+      <MatchStatsModal match={selectedMatch} onClose={() => setSelectedMatch(null)} />
     </div>
   );
 }
