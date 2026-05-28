@@ -144,13 +144,13 @@ export default function DashboardPage() {
           const topTeams = g?.predicted_standings?.slice(0, 3)
             .map((t: any) => t.team_name).join(', ') ?? '';
           if (topTeams) {
-            setInsightText(`🔮 Análisis del Grupo A: ${topTeams} lideran las posiciones proyectadas según el modelo Poisson. Argentina y Francia se perfilan como los favoritos globales al título. La ventaja de local de México y Estados Unidos será determinante en fase de grupos.`);
+            setInsightText(`Análisis del Grupo A: ${topTeams} lideran las posiciones proyectadas según el modelo Poisson. Argentina y Francia se perfilan como los favoritos globales al título. La ventaja de local de México y Estados Unidos será determinante en fase de grupos.`);
           } else {
-            setInsightText('🔮 El modelo estadístico analiza 104 partidos usando distribuciones de Poisson, ratings ELO y xG histórico. Argentina y Francia encabezan las probabilidades de campeonato con ventajas significativas en sus grupos.');
+            setInsightText('El modelo estadístico analiza 104 partidos usando distribuciones de Poisson, ratings ELO y xG histórico. Argentina y Francia encabezan las probabilidades de campeonato con ventajas significativas en sus grupos.');
           }
           setInsightLoading(false);
         }).catch(() => {
-          setInsightText('🔮 Argentina y Francia encabezan las probabilidades de campeonato. El modelo Poisson con datos ELO y xG histórico proyecta las fases eliminatorias con alta confianza estadística.');
+          setInsightText('Argentina y Francia encabezan las probabilidades de campeonato. El modelo Poisson con datos ELO y xG histórico proyecta las fases eliminatorias con alta confianza estadística.');
           setInsightLoading(false);
         });
 

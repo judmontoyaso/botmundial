@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -13,6 +12,7 @@ import {
   Target,
   Menu,
   X,
+  Trophy,
 } from 'lucide-react';
 
 const navItems = [
@@ -35,18 +35,17 @@ export default function Sidebar() {
   const sidebarContent = (
     <>
       {/* Logo */}
-      <div className="px-5 pt-4 pb-4 border-b border-accent-gold/10">
-        <Link href="/" className="flex items-center gap-3 group" onClick={() => setMobileOpen(false)}>
-          <div className="relative flex-shrink-0">
-            <Image
-              src="/logo.png"
-              alt="ProMundial"
-              width={72}
-              height={72}
-              className="drop-shadow-[0_0_10px_rgba(212,168,83,0.5)] group-hover:drop-shadow-[0_0_18px_rgba(212,168,83,0.8)] transition-all duration-300"
-            />
-          </div>
-          <div className="min-w-0">
+      <div className="px-5 pt-5 pb-4 border-b border-accent-gold/10">
+        <Link href="/" className="flex flex-col items-center gap-2 group" onClick={() => setMobileOpen(false)}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="ProMundial"
+            width={80}
+            height={80}
+            className="drop-shadow-[0_0_12px_rgba(212,168,83,0.5)] group-hover:drop-shadow-[0_0_22px_rgba(212,168,83,0.85)] group-hover:scale-105 transition-all duration-300"
+          />
+          <div className="text-center">
             <h1 className="text-xl font-extrabold gradient-gold-text leading-tight tracking-tight">ProMundial</h1>
             <p className="text-[10px] text-text-secondary tracking-widest uppercase mt-0.5">Análisis IA · 2026</p>
           </div>
@@ -89,7 +88,7 @@ export default function Sidebar() {
       {/* Footer Badge */}
       <div className="p-4 border-t border-accent-gold/10">
         <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-bg-tertiary/30">
-          <span className="text-lg">⚽</span>
+          <Trophy className="w-4 h-4 text-accent-gold flex-shrink-0" />
           <div>
             <p className="text-xs font-semibold text-text-primary">FIFA World Cup</p>
             <p className="text-[10px] text-text-secondary">2026 · USA · MEX · CAN</p>
