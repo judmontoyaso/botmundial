@@ -35,17 +35,17 @@ export default function Sidebar() {
   const sidebarContent = (
     <>
       {/* Logo */}
-      <div className="p-6 border-b border-accent-gold/10">
+      <div className="px-5 pt-4 pb-4 border-b border-accent-gold/10">
         <Link href="/" className="flex items-center gap-3 group" onClick={() => setMobileOpen(false)}>
-          <div className="relative">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-gold to-accent-amber flex items-center justify-center shadow-lg shadow-accent-gold/20">
-              <Trophy className="w-5 h-5 text-bg-primary" />
+          <div className="relative flex-shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent-gold via-accent-amber to-yellow-600 flex items-center justify-center shadow-lg shadow-accent-gold/30 group-hover:shadow-accent-gold/50 transition-shadow duration-300">
+              <Trophy className="w-6 h-6 text-bg-primary drop-shadow-sm" />
             </div>
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent-gold to-accent-amber opacity-0 group-hover:opacity-40 blur-xl transition-opacity duration-500" />
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent-gold to-accent-amber opacity-0 group-hover:opacity-50 blur-xl transition-opacity duration-500" />
           </div>
-          <div>
-            <h1 className="text-lg font-bold gradient-gold-text">ProMundial</h1>
-            <p className="text-[10px] text-text-secondary tracking-wider uppercase">Análisis IA · 2026</p>
+          <div className="min-w-0">
+            <h1 className="text-xl font-extrabold gradient-gold-text leading-tight tracking-tight">ProMundial</h1>
+            <p className="text-[10px] text-text-secondary tracking-widest uppercase mt-0.5">Análisis IA · 2026</p>
           </div>
         </Link>
       </div>
