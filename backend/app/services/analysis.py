@@ -182,7 +182,10 @@ def _form_modifier(team: Team) -> float:
 
 def _h2h_modifier(h2h: dict, perspective_code: str) -> float:
     """Historical H2H advantage -0.08…+0.08. Needs ≥3 matches to activate."""
-    total = h2h.get("total_matches", 0)
+    total = (
+        h2h.get("total_matches")
+        or h2h.get("h2h_wins_a", 0) + h2h.get("h2h_wins_b", 0) + h2h.get("h2h_draws", 0)
+    )
     if total < 3:
         return 0.0
     if perspective_code == h2h.get("team_a_code"):

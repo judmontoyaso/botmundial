@@ -113,8 +113,4 @@ VALUES
 ('URU', 'GER',   2,  5,  2),  -- Germany dominates
 ('USA', 'AUS',   8,  5,  1),  -- USA edge
 ('USA', 'MEX',  23, 36, 19),  -- Mexico leads all-time
-ON CONFLICT (team_a_code, team_b_code) DO UPDATE
-  SET h2h_wins_a = EXCLUDED.h2h_wins_a,
-      h2h_wins_b = EXCLUDED.h2h_wins_b,
-      h2h_draws  = EXCLUDED.h2h_draws,
-      last_updated = now();
+ON CONFLICT DO NOTHING;

@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS head_to_head (
   h2h_wins_a INT NOT NULL DEFAULT 0,
   h2h_wins_b INT NOT NULL DEFAULT 0,
   h2h_draws INT NOT NULL DEFAULT 0,
-  total_matches INT GENERATED ALWAYS AS (h2h_wins_a + h2h_wins_b + h2h_draws) STORED,
   last_updated TIMESTAMPTZ DEFAULT now(),
   CONSTRAINT uq_h2h_pair UNIQUE(team_a_code, team_b_code)
 );
