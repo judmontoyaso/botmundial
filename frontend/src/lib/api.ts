@@ -73,6 +73,9 @@ export const api = {
   getSyncStatus: () => fetchJSON<any>('/sync/status'),
   runSync: () => fetchJSON<any>('/sync/run', { method: 'POST' }),
 
+  // Backtest
+  getQatar2022Backtest: () => fetchJSON<any>('/analysis/backtest/qatar2022'),
+
   // Player absences
   getTeamAbsences: (code: string) => fetchJSON<any>(`/teams/${code}/absences`),
   addTeamAbsence: (code: string, data: { player_name: string; position?: string; importance?: number; reason?: string }) =>

@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import analysis, matches, predictions, teams, sync
+from app.routers import analysis, backtest, matches, predictions, teams, sync
 from app.services import data_service, livesync
 
 # ---------------------------------------------------------------------------
@@ -111,3 +111,4 @@ app.include_router(matches.router, prefix="/api")
 app.include_router(predictions.router, prefix="/api")
 app.include_router(analysis.router, prefix="/api")
 app.include_router(sync.router, prefix="/api")
+app.include_router(backtest.router, prefix="/api")

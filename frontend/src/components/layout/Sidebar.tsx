@@ -15,6 +15,7 @@ import {
   Trophy,
   GitBranch,
   Zap,
+  FlaskConical,
 } from 'lucide-react';
 
 const navItems = [
@@ -24,6 +25,7 @@ const navItems = [
   { href: '/groups',     label: 'Grupos',           icon: Users,           desc: 'Fase de grupos' },
   { href: '/bracket',    label: 'Simulación',       icon: GitBranch,       desc: 'Monte Carlo' },
   { href: '/tracker',    label: 'Mi Polla',         icon: Target,          desc: 'Mis apuestas' },
+  { href: '/backtest',   label: 'Backtest',          icon: FlaskConical,    desc: 'Qatar 2022' },
 ];
 
 function Countdown() {
