@@ -21,9 +21,10 @@ logger = logging.getLogger("app.services.analysis")
 _MEAN_XG_FOR = 1.30
 _MEAN_XG_AGAINST = 1.10
 _MEAN_GOALS = 1.20
-_HOME_FACTOR = 1.08
+_HOME_FACTOR = 1.04   # calibrated from Qatar 2022 backtest (was 1.08)
 _ELO_SCALE = 3000
 _DC_RHO = -0.10
+_DRAW_BOOST = 1.35    # boosts equal-score probabilities to fix draw underprediction
 
 # ---------------------------------------------------------------------------
 # Poisson helpers
@@ -53,18 +54,23 @@ def _poisson_sample(lam: float) -> int:
 def build_scoreline_matrix(lam_home: float, lam_away: float, max_goals: int = 5) -> list[list[float]]:
     """
     Returns a (max_goals+1)×(max_goals+1) matrix P(home=h, away=a).
-    Applies Dixon-Coles correction for low-scoring results.
+    Applies Dixon-Coles correction for low-scoring results and a draw boost
+    factor on all equal-score cells to correct Poisson draw underprediction.
     """
     n = max_goals + 1
     matrix: list[list[float]] = [
         [_poisson_pmf(h, lam_home) * _poisson_pmf(a, lam_away) for a in range(n)]
         for h in range(n)
     ]
+    # Dixon-Coles low-score correction
     rho = _DC_RHO
     matrix[0][0] *= max(0.0, 1 - lam_home * lam_away * rho)
     matrix[1][0] *= max(0.0, 1 + lam_away * rho)
     matrix[0][1] *= max(0.0, 1 + lam_home * rho)
     matrix[1][1] *= max(0.0, 1 - rho)
+    # Draw boost: multiply all equal-score cells to correct underprediction
+    for g in range(n):
+        matrix[g][g] *= _DRAW_BOOST
     total = sum(matrix[h][a] for h in range(n) for a in range(n))
     if total > 0:
         matrix = [[round(matrix[h][a] / total, 6) for a in range(n)] for h in range(n)]
