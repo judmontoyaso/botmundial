@@ -27,6 +27,91 @@ _DC_RHO = -0.10
 _DRAW_BOOST = 1.35    # boosts equal-score probabilities to fix draw underprediction
 
 # ---------------------------------------------------------------------------
+# Klement-inspired structural factors: GDP per capita + Population
+# Max effect: ±5% for GDP, ±3% for population on team lambda
+# ---------------------------------------------------------------------------
+_GDP_REF = 15_000       # USD reference (median WC team)
+_GDP_MAX = 0.025        # max ±2.5% effect on lambda
+_POP_REF_M = 40.0       # millions reference
+_POP_MAX = 0.015        # max ±1.5% effect on lambda
+
+_GDP_PER_CAPITA: dict[str, int] = {
+    # CONCACAF
+    "USA": 85000, "CAN": 55000, "MEX": 11000, "CRC": 14000,
+    "PAN": 16000, "HON": 3000,  "JAM": 5800,  "HAI": 1700,
+    "CUW": 20000, "TRI": 17000, "SLV": 5000,  "GUA": 5500,
+    # CONMEBOL
+    "BRA": 10000, "ARG": 13000, "COL": 7000,  "URU": 17000,
+    "ECU": 7000,  "CHI": 16000, "BOL": 3500,  "PAR": 5500,
+    "PER": 7000,  "VEN": 8000,
+    # UEFA
+    "FRA": 46000, "ENG": 48000, "ESP": 33000, "GER": 54000,
+    "POR": 25000, "NED": 57000, "BEL": 51000, "ITA": 37000,
+    "CRO": 20000, "SUI": 92000, "AUT": 57000, "TUR": 12000,
+    "SCO": 48000, "ALB": 7000,  "SRB": 10000, "SVN": 30000,
+    "HUN": 22000, "ROU": 16000, "SVK": 23000, "UKR": 5000,
+    "CZE": 28000, "BIH": 8000,  "GRE": 22000, "NOR": 108000,
+    "SWE": 57000, "DEN": 67000, "POL": 20000,
+    # AFC
+    "JPN": 35000, "KOR": 35000, "AUS": 65000, "IRN": 6000,
+    "KSA": 29000, "JOR": 5000,  "QAT": 85000, "IRQ": 7000,
+    "UZB": 3000,
+    # CAF
+    "MAR": 4000,  "EGY": 4300,  "NGA": 2100,  "CMR": 1600,
+    "SEN": 2000,  "CIV": 2300,  "GHA": 2200,  "TUN": 3800,
+    "ALG": 4200,  "RSA": 7000,  "DRC": 600,   "MLI": 900,
+    "CPV": 4000,  "SDN": 800,
+    # OFC
+    "NZL": 47000,
+}
+
+_POPULATION_M: dict[str, float] = {
+    # CONCACAF
+    "USA": 340,  "CAN": 38,   "MEX": 130,  "CRC": 5,
+    "PAN": 4,    "HON": 10,   "JAM": 3,    "HAI": 12,
+    "CUW": 0.16, "TRI": 1.4,  "SLV": 6.5,  "GUA": 17,
+    # CONMEBOL
+    "BRA": 215,  "ARG": 46,   "COL": 52,   "URU": 3.5,
+    "ECU": 18,   "CHI": 19,   "BOL": 12,   "PAR": 7,
+    "PER": 33,   "VEN": 32,
+    # UEFA
+    "FRA": 68,   "ENG": 57,   "ESP": 47,   "GER": 83,
+    "POR": 10,   "NED": 17,   "BEL": 11,   "ITA": 60,
+    "CRO": 4,    "SUI": 8,    "AUT": 9,    "TUR": 85,
+    "SCO": 5.5,  "ALB": 2.8,  "SRB": 7,    "SVN": 2,
+    "HUN": 10,   "ROU": 19,   "SVK": 5.5,  "UKR": 38,
+    "CZE": 10.5, "BIH": 3.3,  "GRE": 10.4, "NOR": 5.5,
+    "SWE": 10.5, "DEN": 6,    "POL": 38,
+    # AFC
+    "JPN": 124,  "KOR": 52,   "AUS": 26,   "IRN": 87,
+    "KSA": 36,   "JOR": 10,   "QAT": 3,    "IRQ": 42,
+    "UZB": 36,
+    # CAF
+    "MAR": 37,   "EGY": 105,  "NGA": 220,  "CMR": 28,
+    "SEN": 17,   "CIV": 27,   "GHA": 32,   "TUN": 12,
+    "ALG": 46,   "RSA": 62,   "DRC": 100,  "MLI": 22,
+    "CPV": 0.56, "SDN": 46,
+    # OFC
+    "NZL": 5,
+}
+
+
+def _gdp_modifier(code: str) -> float:
+    """±5% lambda modifier based on GDP per capita (log-scaled, Klement-inspired)."""
+    gdp = _GDP_PER_CAPITA.get(code.upper(), _GDP_REF)
+    raw = math.log(gdp / _GDP_REF)
+    scale = _GDP_MAX / math.log(108_000 / _GDP_REF)  # normalised to Norway (highest)
+    return max(-_GDP_MAX, min(_GDP_MAX, raw * scale))
+
+
+def _pop_modifier(code: str) -> float:
+    """±3% lambda modifier based on talent-pool size (log-scaled)."""
+    pop = _POPULATION_M.get(code.upper(), _POP_REF_M)
+    raw = math.log(max(pop, 0.1) / _POP_REF_M)
+    scale = _POP_MAX / math.log(340 / _POP_REF_M)   # normalised to USA (largest WC team)
+    return max(-_POP_MAX, min(_POP_MAX, raw * scale))
+
+# ---------------------------------------------------------------------------
 # Poisson helpers
 # ---------------------------------------------------------------------------
 
@@ -247,6 +332,16 @@ def _compute_lambdas(
     lh = max(0.3, lh * (1.0 + _form_modifier(home)))
     la = max(0.3, la * (1.0 + _form_modifier(away)))
 
+    # Structural factors: GDP per capita + population (Klement-inspired).
+    # Applied at reduced weight (×0.4) to avoid double-counting with ELO,
+    # which already captures historical performance correlated with GDP/population.
+    gdp_h = _gdp_modifier(home.code) * 0.4
+    gdp_a = _gdp_modifier(away.code) * 0.4
+    pop_h = _pop_modifier(home.code) * 0.4
+    pop_a = _pop_modifier(away.code) * 0.4
+    lh = max(0.3, lh * (1.0 + gdp_h + pop_h))
+    la = max(0.3, la * (1.0 + gdp_a + pop_a))
+
     # H2H historical factor
     h2h_rec = None
     if all_h2h is not None:
@@ -313,9 +408,7 @@ def predict_match_statistical(
     pred_home = max(0, round(lh))
     pred_away = max(0, round(la))
 
-    elo_diff = abs(home_team.stats.elo_rating - away_team.stats.elo_rating)
-    prob_gap = abs(home_win_prob - away_win_prob)
-    confidence = round(min(0.50 + elo_diff / 2000 + prob_gap * 0.3, 0.95), 3)
+    confidence = round(max(home_win_prob, draw_prob, away_win_prob), 3)
 
     return {
         "predicted_home_score": pred_home,
@@ -345,6 +438,14 @@ def predict_match_statistical(
         "away_climate_mod": away_climate_mod,
         "home_cont_mod": home_cont_mod,
         "away_cont_mod": away_cont_mod,
+        "home_gdp_mod": round(_gdp_modifier(home_team.code), 4),
+        "away_gdp_mod": round(_gdp_modifier(away_team.code), 4),
+        "home_pop_mod": round(_pop_modifier(home_team.code), 4),
+        "away_pop_mod": round(_pop_modifier(away_team.code), 4),
+        "home_gdp": _GDP_PER_CAPITA.get(home_team.code.upper(), _GDP_REF),
+        "away_gdp": _GDP_PER_CAPITA.get(away_team.code.upper(), _GDP_REF),
+        "home_pop_m": _POPULATION_M.get(home_team.code.upper(), _POP_REF_M),
+        "away_pop_m": _POPULATION_M.get(away_team.code.upper(), _POP_REF_M),
         "city": city,
         "climate_desc": climate_desc,
     }
