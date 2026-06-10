@@ -8,6 +8,7 @@ import StatsCard from '@/components/ui/StatsCard';
 import ProbabilityBar from '@/components/charts/ProbabilityBar';
 import ScorelineMatrix from '@/components/charts/ScorelineMatrix';
 import { api } from '@/lib/api';
+import { matchLocalDate } from '@/lib/datetime';
 import type { Match, AIPrediction } from '@/types';
 
 const container = {
@@ -200,7 +201,7 @@ export default function PredictionsPage() {
             const awayName = item.away_team_name ?? '';
             const homeFlag = item.home_team_flag ?? '';
             const awayFlag = item.away_team_flag ?? '';
-            const date = match.match_date ? match.match_date.substring(0, 10) : '';
+            const date = matchLocalDate(match.match_date);
             return (
               <motion.div key={matchId} variants={item} layout className="rounded-2xl border border-white/5 bg-bg-secondary/40 backdrop-blur-xl overflow-hidden">
                 <div className="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -230,7 +231,7 @@ export default function PredictionsPage() {
           const awayFlag = item.away_team_flag ?? (match as any).away_flag;
           const homeFlagUrl = item.home_team_flag_url ?? '';
           const awayFlagUrl = item.away_team_flag_url ?? '';
-          const date = match.match_date ? match.match_date.substring(0, 10) : '';
+          const date = matchLocalDate(match.match_date);
 
           return (
             <motion.div

@@ -211,7 +211,7 @@ def update_match_result(match_id: int, home_score: int, away_score: int) -> Opti
     supabase.table("matches").update({
         "home_score": home_score,
         "away_score": away_score,
-        "status": "finished",
+        "status": "completed",
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }).eq("id", match.id).execute()
     _recalculate_prediction_points(match.id, home_score, away_score)

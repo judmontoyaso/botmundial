@@ -15,6 +15,7 @@ import StatsCard from '@/components/ui/StatsCard';
 import FlagImg from '@/components/ui/FlagImg';
 import LoadingBall from '@/components/ui/LoadingBall';
 import { api } from '@/lib/api';
+import { matchLocalDate, matchLocalTime } from '@/lib/datetime';
 import type { Match } from '@/types';
 
 const stagger = {
@@ -128,7 +129,8 @@ export default function DashboardPage() {
             away_flag: item.away_team_flag,
             home_flag_url: item.home_team_flag_url ?? '',
             away_flag_url: item.away_team_flag_url ?? '',
-            date: item.match.match_date?.substring(0, 10) ?? '',
+            date: matchLocalDate(item.match.match_date),
+            time: matchLocalTime(item.match.match_date),
           })).slice(0, 5)
         );
         setStats(statsData);

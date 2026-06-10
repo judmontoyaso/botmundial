@@ -42,7 +42,7 @@ async def match_analysis(match_id: int):
         raise HTTPException(status_code=404, detail="Team data not found")
 
     # Statistical analysis
-    stat_pred = analysis_service.predict_match_statistical(home, away)
+    stat_pred = analysis_service.predict_match_statistical(home, away, match)
     comparison = analysis_service.compare_teams(home, away)
 
     # LLM narrative analysis
@@ -131,7 +131,7 @@ async def group_analysis(letter: str):
         home = data_service.get_team_by_code(m.home_team_code)
         away = data_service.get_team_by_code(m.away_team_code)
         if home and away:
-            pred = analysis_service.predict_match_statistical(home, away)
+            pred = analysis_service.predict_match_statistical(home, away, m)
             match_predictions.append({
                 "match_number": m.match_number,
                 "home_team": m.home_team_code,

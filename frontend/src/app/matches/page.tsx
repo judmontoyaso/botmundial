@@ -8,6 +8,7 @@ import LoadingBall from '@/components/ui/LoadingBall';
 import MatchStatsModal from '@/components/ui/MatchStatsModal';
 import FlagImg from '@/components/ui/FlagImg';
 import { api } from '@/lib/api';
+import { matchLocalDate, matchLocalTime } from '@/lib/datetime';
 import type { Match } from '@/types';
 
 const container = {
@@ -188,8 +189,8 @@ export default function MatchesPage() {
         away_flag: item.away_team_flag,
         home_flag_url: item.home_team_flag_url ?? '',
         away_flag_url: item.away_team_flag_url ?? '',
-        date: item.match.match_date ? item.match.match_date.substring(0, 10) : '',
-        time: item.match.match_date ? item.match.match_date.substring(11, 16) : '',
+        date: matchLocalDate(item.match.match_date),
+        time: matchLocalTime(item.match.match_date),
         group: item.match.group_letter,
         home_confederation: item.home_team_confederation ?? '',
         away_confederation: item.away_team_confederation ?? '',
@@ -271,7 +272,7 @@ export default function MatchesPage() {
     return mList.sort((a, b) => {
       if (a.status === 'scheduled' && b.status !== 'scheduled') return -1;
       if (a.status !== 'scheduled' && b.status === 'scheduled') return 1;
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
+      return new Date(a.match_date ?? a.date).getTime() - new Date(b.match_date ?? b.date).getTime();
     });
   }, [activeTab, searchQuery, selectedTeams, matches]);
 

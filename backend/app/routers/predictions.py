@@ -75,10 +75,13 @@ async def get_ai_prediction(
     """Get a combined AI + statistical prediction. Pass force=true to refresh from DeepSeek."""
     if force:
         data_service.delete_ai_prediction(match_id)
-        # Also clear the in-process LLM memory cache for this match
+        # Clear all in-memory LLM cache entries that reference this match_id.
+        # Keys use format "prediction_{home}_{away}_{match_id}" and "analysis_{home}_{away}",
+        # so we drop every key ending with the match_id or containing it as a suffix segment.
         from app.services import llm_service
-        llm_service._cache.pop(f"prediction_{match_id}", None)
-        llm_service._cache.pop(f"analysis_{match_id}", None)
+        stale = [k for k in list(llm_service._cache) if k.endswith(f"_{match_id}")]
+        for k in stale:
+            llm_service._cache.pop(k, None)
     prediction = predictor_service.predict_match(match_id)
     if prediction is None:
         raise HTTPException(status_code=404, detail=f"Match {match_id} not found or teams missing")

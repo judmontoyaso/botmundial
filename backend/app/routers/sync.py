@@ -1,4 +1,4 @@
-"""Router for live sync endpoints (API-Football → DB)."""
+"""Router for live sync endpoints (ESPN scoreboard → DB)."""
 
 from fastapi import APIRouter
 
@@ -15,6 +15,6 @@ async def sync_status():
 
 @router.post("/run")
 async def run_sync():
-    """Manually trigger a WC results sync from API-Football."""
+    """Manually trigger a WC results sync from the ESPN scoreboard."""
     result = await livesync.sync_wc_results()
     return result

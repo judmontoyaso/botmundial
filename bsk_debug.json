@@ -1,0 +1,1282 @@
+{
+  "games_tt": [],
+  "games_efes": [],
+  "h2h": [
+    {
+      "id": 499584,
+      "date": "2026-05-29T15:00:00+00:00",
+      "time": "15:00",
+      "timestamp": 1780066800,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "Super Lig - Quarter-finals",
+      "venue": "Ankara Spor Salonu",
+      "status": {
+        "long": "Quarter 2",
+        "short": "Q2",
+        "timer": "6"
+      },
+      "league": {
+        "id": 104,
+        "name": "Basketbol Süper Ligi",
+        "type": "League",
+        "season": "2025-2026",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        },
+        "away": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 17,
+          "quarter_2": 7,
+          "quarter_3": null,
+          "quarter_4": null,
+          "over_time": null,
+          "total": 24
+        },
+        "away": {
+          "quarter_1": 16,
+          "quarter_2": 8,
+          "quarter_3": null,
+          "quarter_4": null,
+          "over_time": null,
+          "total": 24
+        }
+      }
+    },
+    {
+      "id": 499564,
+      "date": "2026-05-27T15:00:00+00:00",
+      "time": "15:00",
+      "timestamp": 1779894000,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "Super Lig - Quarter-finals",
+      "venue": "Basketbol Gelisim Merkezi",
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Basketbol Süper Ligi",
+        "type": "League",
+        "season": "2025-2026",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        },
+        "away": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 20,
+          "quarter_2": 25,
+          "quarter_3": 23,
+          "quarter_4": 18,
+          "over_time": null,
+          "total": 86
+        },
+        "away": {
+          "quarter_1": 21,
+          "quarter_2": 15,
+          "quarter_3": 25,
+          "quarter_4": 14,
+          "over_time": null,
+          "total": 75
+        }
+      }
+    },
+    {
+      "id": 464981,
+      "date": "2026-04-25T10:00:00+00:00",
+      "time": "10:00",
+      "timestamp": 1777111200,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "28",
+      "venue": "Basketbol Gelisim Merkezi",
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Basketbol Süper Ligi",
+        "type": "League",
+        "season": "2025-2026",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        },
+        "away": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 29,
+          "quarter_2": 26,
+          "quarter_3": 24,
+          "quarter_4": 22,
+          "over_time": null,
+          "total": 101
+        },
+        "away": {
+          "quarter_1": 31,
+          "quarter_2": 17,
+          "quarter_3": 19,
+          "quarter_4": 24,
+          "over_time": null,
+          "total": 91
+        }
+      }
+    },
+    {
+      "id": 464868,
+      "date": "2025-12-27T15:00:00+00:00",
+      "time": "15:00",
+      "timestamp": 1766847600,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "13",
+      "venue": "Ankara Arena",
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Basketbol Süper Ligi",
+        "type": "League",
+        "season": "2025-2026",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        },
+        "away": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 22,
+          "quarter_2": 14,
+          "quarter_3": 18,
+          "quarter_4": 21,
+          "over_time": null,
+          "total": 75
+        },
+        "away": {
+          "quarter_1": 18,
+          "quarter_2": 20,
+          "quarter_3": 21,
+          "quarter_4": 11,
+          "over_time": null,
+          "total": 70
+        }
+      }
+    },
+    {
+      "id": 417125,
+      "date": "2025-03-31T15:00:00+00:00",
+      "time": "15:00",
+      "timestamp": 1743433200,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "23",
+      "venue": "Ankara Arena",
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2024-2025",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        },
+        "away": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 18,
+          "quarter_2": 23,
+          "quarter_3": 26,
+          "quarter_4": 23,
+          "over_time": null,
+          "total": 90
+        },
+        "away": {
+          "quarter_1": 27,
+          "quarter_2": 21,
+          "quarter_3": 24,
+          "quarter_4": 28,
+          "over_time": null,
+          "total": 100
+        }
+      }
+    },
+    {
+      "id": 417012,
+      "date": "2024-12-01T17:30:00+00:00",
+      "time": "17:30",
+      "timestamp": 1733074200,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "8",
+      "venue": "Sinan Erdem Dome",
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2024-2025",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        },
+        "away": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 12,
+          "quarter_2": 29,
+          "quarter_3": 19,
+          "quarter_4": 26,
+          "over_time": null,
+          "total": 86
+        },
+        "away": {
+          "quarter_1": 18,
+          "quarter_2": 23,
+          "quarter_3": 18,
+          "quarter_4": 22,
+          "over_time": null,
+          "total": 81
+        }
+      }
+    },
+    {
+      "id": 399023,
+      "date": "2024-05-17T15:00:00+00:00",
+      "time": "15:00",
+      "timestamp": 1715958000,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "Super Lig - Quarter-finals",
+      "venue": "Ankara Arena",
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2023-2024",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        },
+        "away": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 26,
+          "quarter_2": 18,
+          "quarter_3": 16,
+          "quarter_4": 18,
+          "over_time": null,
+          "total": 78
+        },
+        "away": {
+          "quarter_1": 27,
+          "quarter_2": 25,
+          "quarter_3": 18,
+          "quarter_4": 16,
+          "over_time": null,
+          "total": 86
+        }
+      }
+    },
+    {
+      "id": 399022,
+      "date": "2024-05-15T15:00:00+00:00",
+      "time": "15:00",
+      "timestamp": 1715785200,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "Super Lig - Quarter-finals",
+      "venue": "Sinan Erdem Dome",
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2023-2024",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        },
+        "away": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 30,
+          "quarter_2": 23,
+          "quarter_3": 27,
+          "quarter_4": 19,
+          "over_time": null,
+          "total": 99
+        },
+        "away": {
+          "quarter_1": 24,
+          "quarter_2": 17,
+          "quarter_3": 19,
+          "quarter_4": 19,
+          "over_time": null,
+          "total": 79
+        }
+      }
+    },
+    {
+      "id": 395705,
+      "date": "2024-04-21T17:30:00+00:00",
+      "time": "17:30",
+      "timestamp": 1713720600,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "28",
+      "venue": "Sinan Erdem Dome",
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2023-2024",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        },
+        "away": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 24,
+          "quarter_2": 23,
+          "quarter_3": 18,
+          "quarter_4": 16,
+          "over_time": null,
+          "total": 81
+        },
+        "away": {
+          "quarter_1": 23,
+          "quarter_2": 16,
+          "quarter_3": 25,
+          "quarter_4": 18,
+          "over_time": null,
+          "total": 82
+        }
+      }
+    },
+    {
+      "id": 383696,
+      "date": "2023-12-24T15:00:00+00:00",
+      "time": "15:00",
+      "timestamp": 1703430000,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "13",
+      "venue": "Ankara Arena",
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2023-2024",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        },
+        "away": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 15,
+          "quarter_2": 18,
+          "quarter_3": 17,
+          "quarter_4": 19,
+          "over_time": null,
+          "total": 69
+        },
+        "away": {
+          "quarter_1": 17,
+          "quarter_2": 24,
+          "quarter_3": 10,
+          "quarter_4": 20,
+          "over_time": null,
+          "total": 71
+        }
+      }
+    },
+    {
+      "id": 349407,
+      "date": "2023-05-13T15:00:00+00:00",
+      "time": "15:00",
+      "timestamp": 1683990000,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "29",
+      "venue": null,
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2022-2023",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        },
+        "away": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 26,
+          "quarter_2": 19,
+          "quarter_3": 34,
+          "quarter_4": 23,
+          "over_time": null,
+          "total": 102
+        },
+        "away": {
+          "quarter_1": 19,
+          "quarter_2": 18,
+          "quarter_3": 13,
+          "quarter_4": 37,
+          "over_time": null,
+          "total": 87
+        }
+      }
+    },
+    {
+      "id": 341448,
+      "date": "2023-01-08T15:00:00+00:00",
+      "time": "15:00",
+      "timestamp": 1673190000,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "14",
+      "venue": null,
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2022-2023",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        },
+        "away": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 22,
+          "quarter_2": 24,
+          "quarter_3": 14,
+          "quarter_4": 25,
+          "over_time": null,
+          "total": 85
+        },
+        "away": {
+          "quarter_1": 17,
+          "quarter_2": 22,
+          "quarter_3": 16,
+          "quarter_4": 15,
+          "over_time": null,
+          "total": 70
+        }
+      }
+    },
+    {
+      "id": 155641,
+      "date": "2022-03-06T14:00:00+00:00",
+      "time": "14:00",
+      "timestamp": 1646575200,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "22",
+      "venue": null,
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2021-2022",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        },
+        "away": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 24,
+          "quarter_2": 16,
+          "quarter_3": 16,
+          "quarter_4": 28,
+          "over_time": null,
+          "total": 84
+        },
+        "away": {
+          "quarter_1": 30,
+          "quarter_2": 21,
+          "quarter_3": 26,
+          "quarter_4": 22,
+          "over_time": null,
+          "total": 99
+        }
+      }
+    },
+    {
+      "id": 155056,
+      "date": "2021-11-07T17:15:00+00:00",
+      "time": "17:15",
+      "timestamp": 1636305300,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "7",
+      "venue": null,
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2021-2022",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        },
+        "away": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 19,
+          "quarter_2": 16,
+          "quarter_3": 19,
+          "quarter_4": 25,
+          "over_time": null,
+          "total": 79
+        },
+        "away": {
+          "quarter_1": 14,
+          "quarter_2": 17,
+          "quarter_3": 21,
+          "quarter_4": 14,
+          "over_time": null,
+          "total": 66
+        }
+      }
+    },
+    {
+      "id": 105902,
+      "date": "2021-01-17T12:15:00+00:00",
+      "time": "12:15",
+      "timestamp": 1610885700,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "17",
+      "venue": null,
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2020-2021",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        },
+        "away": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 25,
+          "quarter_2": 21,
+          "quarter_3": 19,
+          "quarter_4": 19,
+          "over_time": null,
+          "total": 84
+        },
+        "away": {
+          "quarter_1": 15,
+          "quarter_2": 23,
+          "quarter_3": 24,
+          "quarter_4": 24,
+          "over_time": null,
+          "total": 86
+        }
+      }
+    },
+    {
+      "id": 95225,
+      "date": "2020-10-04T14:30:00+00:00",
+      "time": "14:30",
+      "timestamp": 1601821800,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "2",
+      "venue": null,
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2020-2021",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        },
+        "away": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 19,
+          "quarter_2": 21,
+          "quarter_3": 21,
+          "quarter_4": 22,
+          "over_time": null,
+          "total": 83
+        },
+        "away": {
+          "quarter_1": 13,
+          "quarter_2": 16,
+          "quarter_3": 28,
+          "quarter_4": 21,
+          "over_time": null,
+          "total": 78
+        }
+      }
+    },
+    {
+      "id": 16456,
+      "date": "2020-03-15T14:30:00+00:00",
+      "time": "14:30",
+      "timestamp": 1584282600,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "23",
+      "venue": null,
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2019-2020",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        },
+        "away": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 21,
+          "quarter_2": 20,
+          "quarter_3": 18,
+          "quarter_4": 22,
+          "over_time": null,
+          "total": 81
+        },
+        "away": {
+          "quarter_1": 27,
+          "quarter_2": 22,
+          "quarter_3": 27,
+          "quarter_4": 27,
+          "over_time": null,
+          "total": 103
+        }
+      }
+    },
+    {
+      "id": 16333,
+      "date": "2019-11-16T17:00:00+00:00",
+      "time": "17:00",
+      "timestamp": 1573923600,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "8",
+      "venue": null,
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2019-2020",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        },
+        "away": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 25,
+          "quarter_2": 16,
+          "quarter_3": 19,
+          "quarter_4": 21,
+          "over_time": null,
+          "total": 81
+        },
+        "away": {
+          "quarter_1": 24,
+          "quarter_2": 17,
+          "quarter_3": 15,
+          "quarter_4": 15,
+          "over_time": null,
+          "total": 71
+        }
+      }
+    },
+    {
+      "id": 76940,
+      "date": "2019-03-11T16:00:00+00:00",
+      "time": "16:00",
+      "timestamp": 1552320000,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "21",
+      "venue": null,
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2018-2019",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        },
+        "away": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 19,
+          "quarter_2": 17,
+          "quarter_3": 13,
+          "quarter_4": 27,
+          "over_time": null,
+          "total": 76
+        },
+        "away": {
+          "quarter_1": 18,
+          "quarter_2": 18,
+          "quarter_3": 27,
+          "quarter_4": 21,
+          "over_time": null,
+          "total": 84
+        }
+      }
+    },
+    {
+      "id": 76840,
+      "date": "2018-11-11T12:15:00+00:00",
+      "time": "12:15",
+      "timestamp": 1541938500,
+      "timezone": "UTC",
+      "stage": null,
+      "week": "6",
+      "venue": null,
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 104,
+        "name": "Super Ligi",
+        "type": "League",
+        "season": "2018-2019",
+        "logo": "https://media.api-sports.io/basketball/leagues/104.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        },
+        "away": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 22,
+          "quarter_2": 20,
+          "quarter_3": 24,
+          "quarter_4": 21,
+          "over_time": null,
+          "total": 87
+        },
+        "away": {
+          "quarter_1": 13,
+          "quarter_2": 21,
+          "quarter_3": 18,
+          "quarter_4": 7,
+          "over_time": null,
+          "total": 59
+        }
+      }
+    },
+    {
+      "id": 298376,
+      "date": "2014-10-05T15:30:00+00:00",
+      "time": "15:30",
+      "timestamp": 1412523000,
+      "timezone": "UTC",
+      "stage": null,
+      "week": null,
+      "venue": null,
+      "status": {
+        "long": "Game Finished",
+        "short": "FT",
+        "timer": null
+      },
+      "league": {
+        "id": 166,
+        "name": "Turkish Cup",
+        "type": "cup",
+        "season": "2014-2015",
+        "logo": "https://media.api-sports.io/basketball/leagues/166.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        },
+        "away": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 21,
+          "quarter_2": 25,
+          "quarter_3": 14,
+          "quarter_4": 15,
+          "over_time": null,
+          "total": 75
+        },
+        "away": {
+          "quarter_1": 14,
+          "quarter_2": 16,
+          "quarter_3": 22,
+          "quarter_4": 13,
+          "over_time": null,
+          "total": 65
+        }
+      }
+    },
+    {
+      "id": 298404,
+      "date": "2013-10-05T12:00:00+00:00",
+      "time": "12:00",
+      "timestamp": 1380974400,
+      "timezone": "UTC",
+      "stage": null,
+      "week": null,
+      "venue": null,
+      "status": {
+        "long": "After Over Time",
+        "short": "AOT",
+        "timer": null
+      },
+      "league": {
+        "id": 166,
+        "name": "Turkish Cup",
+        "type": "cup",
+        "season": "2013-2014",
+        "logo": "https://media.api-sports.io/basketball/leagues/166.png"
+      },
+      "country": {
+        "id": 48,
+        "name": "Turkey",
+        "code": "TR",
+        "flag": "https://media.api-sports.io/flags/tr.svg"
+      },
+      "teams": {
+        "home": {
+          "id": 1263,
+          "name": "Anadolu Efes",
+          "logo": "https://media.api-sports.io/basketball/teams/1263.png"
+        },
+        "away": {
+          "id": 1277,
+          "name": "Turk Telekom",
+          "logo": "https://media.api-sports.io/basketball/teams/1277.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 20,
+          "quarter_2": 22,
+          "quarter_3": 27,
+          "quarter_4": 21,
+          "over_time": 6,
+          "total": 96
+        },
+        "away": {
+          "quarter_1": 21,
+          "quarter_2": 27,
+          "quarter_3": 26,
+          "quarter_4": 16,
+          "over_time": 11,
+          "total": 101
+        }
+      }
+    }
+  ]
+}

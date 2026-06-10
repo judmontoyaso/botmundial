@@ -32,6 +32,8 @@ export interface Match {
   away_flag: string;
   home_score: number | null;
   away_score: number | null;
+  /** Fecha/hora del partido en UTC (ISO); usar lib/datetime para mostrarla */
+  match_date?: string;
   date: string;
   time: string;
   venue: string;

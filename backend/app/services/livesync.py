@@ -1,9 +1,12 @@
 """
-Live sync service — fetches finished WC2026 results from API-Football,
-updates match scores, recalculates ELO, and updates team form stats.
+Live sync service — fetches finished WC2026 results from the public ESPN
+scoreboard API, updates match scores, recalculates ELO, and updates team
+form stats.
 
-API-Football docs: https://www.api-football.com/documentation-v3
-Free tier: 100 req/day via api-sports.io or RapidAPI.
+Nota: antes se usaba API-Football, pero su plan gratuito NO da acceso a la
+temporada 2026 ("Free plans do not have access to this season"), por lo que
+el sync nunca traía datos. ESPN es pública, sin API key, y es la misma
+fuente con la que se corrigió el calendario oficial (fix_schedule.py).
 """
 
 from __future__ import annotations
@@ -14,7 +17,6 @@ from typing import Optional
 
 import httpx
 
-from app.config import get_settings
 from app.services import data_service
 
 logger = logging.getLogger("app.services.livesync")
@@ -23,9 +25,17 @@ logger = logging.getLogger("app.services.livesync")
 # Constants
 # ---------------------------------------------------------------------------
 
-_APIF_BASE = "https://v3.football.api-sports.io"
-_WC_LEAGUE_ID = 1       # FIFA World Cup on API-Football
-_WC_SEASON = 2026
+_ESPN_SCOREBOARD = (
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
+)
+# Ventana completa del torneo (UTC), en bloques para no exceder el límite
+# de eventos por respuesta del scoreboard.
+_WC_DATE_RANGES = [
+    "20260611-20260620",
+    "20260621-20260630",
+    "20260701-20260710",
+    "20260711-20260720",
+]
 _ELO_K = 60             # High K-factor for World Cup (most important competition)
 
 # State
@@ -33,8 +43,8 @@ _last_sync: Optional[datetime] = None
 _last_result: dict = {}
 
 # ---------------------------------------------------------------------------
-# API-Football team name → our FIFA 3-letter code
-# Teams confirmed for WC2026 (CONCACAF, CONMEBOL, UEFA, AFC, CAF, OFC)
+# ESPN team name → our FIFA 3-letter code (fallback cuando la abreviatura
+# de ESPN no coincide con nuestro código)
 # ---------------------------------------------------------------------------
 _NAME_TO_CODE: dict[str, str] = {
     # CONCACAF (host nations + qualifiers)
@@ -54,7 +64,8 @@ _NAME_TO_CODE: dict[str, str] = {
     "Albania": "ALB", "Serbia": "SRB", "Slovenia": "SVN",
     "Hungary": "HUN", "Romania": "ROU", "Slovakia": "SVK",
     "Ukraine": "UKR", "Czech Republic": "CZE", "Czechia": "CZE",
-    "Bosnia and Herzegovina": "BIH", "Greece": "GRE",
+    "Bosnia and Herzegovina": "BIH", "Bosnia-Herzegovina": "BIH",
+    "Türkiye": "TUR", "Greece": "GRE",
     "Norway": "NOR", "Sweden": "SWE", "Denmark": "DEN", "Poland": "POL",
     "Georgia": "GEO", "Iceland": "ISL", "Wales": "WAL", "Finland": "FIN",
     # AFC
@@ -67,8 +78,10 @@ _NAME_TO_CODE: dict[str, str] = {
     "Cameroon": "CMR", "Senegal": "SEN", "Ivory Coast": "CIV",
     "Côte d'Ivoire": "CIV", "Ghana": "GHA", "Tunisia": "TUN",
     "Algeria": "ALG", "South Africa": "RSA",
-    "DR Congo": "DRC", "Congo DR": "DRC", "Mali": "MLI",
+    "DR Congo": "COD", "Congo DR": "COD", "Mali": "MLI",
     "Cape Verde": "CPV", "Sudan": "SDN",
+    # CONCACAF adicionales
+    "Curaçao": "CUW", "Curacao": "CUW",
     # OFC
     "New Zealand": "NZL",
 }
@@ -95,48 +108,70 @@ def _elo_update(
 
 
 # ---------------------------------------------------------------------------
-# API-Football fetcher
+# ESPN fetcher
 # ---------------------------------------------------------------------------
 
-async def _fetch_fixtures(status: str = "FT") -> list[dict]:
+async def _fetch_finished_fixtures() -> list[dict]:
     """
-    Fetch WC2026 fixtures with the given status from API-Football.
-    status: 'FT' (finished), 'LIVE' (1H/2H/HT/ET/P), 'NS' (not started)
-    Returns the raw 'response' list from the API.
+    Fetch finished WC2026 fixtures from the ESPN public scoreboard.
+    Returns normalized dicts: {home_name, away_name, home_abbr, away_abbr,
+    home_goals, away_goals, date}.
     """
-    settings = get_settings()
-    key = settings.API_FOOTBALL_KEY
-    if not key:
-        logger.warning("API_FOOTBALL_KEY not set — skipping fetch")
-        return []
-
-    headers = {"x-apisports-key": key}
-    params = {"league": _WC_LEAGUE_ID, "season": _WC_SEASON, "status": status}
-
+    events: dict[str, dict] = {}
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
-            resp = await client.get(f"{_APIF_BASE}/fixtures", params=params, headers=headers)
-            resp.raise_for_status()
-            payload = resp.json()
-            remaining = resp.headers.get("x-ratelimit-requests-remaining", "?")
-            logger.info(
-                "API-Football: %d fixtures (status=%s), %s requests remaining",
-                len(payload.get("response", [])), status, remaining,
-            )
-            return payload.get("response", [])
+            for rng in _WC_DATE_RANGES:
+                resp = await client.get(
+                    _ESPN_SCOREBOARD, params={"dates": rng, "limit": 200}
+                )
+                resp.raise_for_status()
+                for e in resp.json().get("events", []):
+                    events[e["id"]] = e
     except httpx.HTTPStatusError as e:
-        logger.error("API-Football HTTP error: %s", e)
+        logger.error("ESPN HTTP error: %s", e)
         return []
     except Exception as e:
-        logger.error("API-Football fetch failed: %s", e)
+        logger.error("ESPN fetch failed: %s", e)
         return []
+
+    finished = []
+    for e in events.values():
+        status_type = (e.get("status") or {}).get("type", {})
+        if not status_type.get("completed"):
+            continue
+        comp = (e.get("competitions") or [{}])[0]
+        sides: dict[str, dict] = {}
+        for c in comp.get("competitors", []):
+            sides[c.get("homeAway", "")] = c
+        home, away = sides.get("home"), sides.get("away")
+        if not home or not away:
+            continue
+        try:
+            home_goals = int(home.get("score"))
+            away_goals = int(away.get("score"))
+        except (TypeError, ValueError):
+            continue
+        finished.append({
+            "home_name": home["team"].get("displayName", ""),
+            "away_name": away["team"].get("displayName", ""),
+            "home_abbr": home["team"].get("abbreviation", ""),
+            "away_abbr": away["team"].get("abbreviation", ""),
+            "home_goals": home_goals,
+            "away_goals": away_goals,
+            "date": e.get("date", ""),
+        })
+    logger.info("ESPN: %d finished fixtures of %d events", len(finished), len(events))
+    return finished
 
 
 # ---------------------------------------------------------------------------
 # Core sync logic
 # ---------------------------------------------------------------------------
 
-def _resolve_code(name: str) -> Optional[str]:
+def _resolve_code(name: str, abbr: str = "") -> Optional[str]:
+    # ESPN abbreviations usually match our FIFA codes directly
+    if abbr and any(t.code == abbr for t in data_service.load_teams()):
+        return abbr
     code = _NAME_TO_CODE.get(name)
     if code:
         return code
@@ -149,25 +184,19 @@ def _resolve_code(name: str) -> Optional[str]:
 
 def _process_fixture(fix: dict) -> bool:
     """
-    Apply a single finished fixture to our DB.
+    Apply a single finished fixture (normalized ESPN dict) to our DB.
     Returns True if the match was newly synced, False if already up-to-date.
     """
-    teams = fix.get("teams", {})
-    goals = fix.get("goals", {})
-    date_str = (fix.get("fixture", {}).get("date") or "")[:10]  # YYYY-MM-DD
+    date_str = (fix.get("date") or "")[:10]  # YYYY-MM-DD (UTC)
+    home_goals = fix["home_goals"]
+    away_goals = fix["away_goals"]
 
-    home_name = teams.get("home", {}).get("name", "")
-    away_name = teams.get("away", {}).get("name", "")
-    home_goals = goals.get("home")
-    away_goals = goals.get("away")
-
-    if home_goals is None or away_goals is None:
-        return False
-
-    home_code = _resolve_code(home_name)
-    away_code = _resolve_code(away_name)
+    home_code = _resolve_code(fix["home_name"], fix["home_abbr"])
+    away_code = _resolve_code(fix["away_name"], fix["away_abbr"])
     if not home_code or not away_code:
-        logger.debug("Unknown team names: '%s' vs '%s'", home_name, away_name)
+        logger.debug(
+            "Unknown team names: '%s' vs '%s'", fix["home_name"], fix["away_name"]
+        )
         return False
 
     # Find our matching fixture by team codes + date
@@ -184,7 +213,7 @@ def _process_fixture(fix: dict) -> bool:
         return False
 
     # Skip if already synced with same scores
-    if (our_match.status.value == "finished"
+    if (our_match.status.value == "completed"
             and our_match.home_score == home_goals
             and our_match.away_score == away_goals):
         return False
@@ -224,7 +253,7 @@ async def sync_wc_results() -> dict:
     """
     global _last_sync, _last_result
 
-    fixtures = await _fetch_fixtures("FT")
+    fixtures = await _fetch_finished_fixtures()
     total = len(fixtures)
 
     synced = 0
@@ -253,5 +282,7 @@ def get_sync_status() -> dict:
     return {
         "last_sync": _last_sync.isoformat() if _last_sync else None,
         "last_result": _last_result,
-        "api_configured": bool(get_settings().API_FOOTBALL_KEY),
+        # ESPN es pública: no requiere API key
+        "api_configured": True,
+        "source": "espn",
     }
