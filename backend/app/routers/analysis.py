@@ -26,7 +26,14 @@ async def match_stats_quick(match_id: int):
         raise HTTPException(status_code=404, detail="Team data not found")
 
     stat_pred = analysis_service.predict_match_statistical(home, away, match)
-    return {"success": True, "statistical_prediction": stat_pred}
+    # Include the cached AI prediction (no LLM call) so the modal can show
+    # the same numbers as the predictions page.
+    ai_pred = data_service.get_ai_prediction(match.id)
+    return {
+        "success": True,
+        "statistical_prediction": stat_pred,
+        "ai_prediction": ai_pred.model_dump() if ai_pred else None,
+    }
 
 
 @router.get("/match/{match_id}")
@@ -125,17 +132,34 @@ async def group_analysis(letter: str):
     # Predicted standings
     standings = analysis_service.calculate_group_standings(letter)
 
-    # Match-by-match predictions
+    # Match-by-match predictions (overlay cached AI predictions so the
+    # numbers match the predictions page; statistical fallback otherwise)
+    try:
+        ai_preds = data_service.get_all_ai_predictions()
+    except Exception:
+        ai_preds = {}
     match_predictions = []
     for m in matches:
         home = data_service.get_team_by_code(m.home_team_code)
         away = data_service.get_team_by_code(m.away_team_code)
         if home and away:
             pred = analysis_service.predict_match_statistical(home, away, m)
+            source = "statistical"
+            if (ai := ai_preds.get(m.id)) is not None:
+                source = "ai"
+                pred.update({
+                    "predicted_home_score": ai.predicted_home_score,
+                    "predicted_away_score": ai.predicted_away_score,
+                    "home_win_prob": ai.home_win_prob,
+                    "draw_prob": ai.draw_prob,
+                    "away_win_prob": ai.away_win_prob,
+                    "confidence": ai.confidence_score,
+                })
             match_predictions.append({
                 "match_number": m.match_number,
                 "home_team": m.home_team_code,
                 "away_team": m.away_team_code,
+                "prediction_source": source,
                 **pred,
             })
 

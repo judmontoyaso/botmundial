@@ -59,30 +59,36 @@ def predict_match(match_id: int) -> Optional[AIPrediction]:
     # LLM prediction (uses enriched context)
     llm = llm_service.predict_match(home, away, stat, match)
 
-    # Merge probabilities (60% stat / 40% LLM)
+    # Merge probabilities (60% stat / 40% LLM), validating the LLM output
     sw, lw = 0.6, 0.4
 
-    home_win_prob = round(stat["home_win_prob"] * sw + llm.get("home_win_prob", stat["home_win_prob"]) * lw, 4)
-    draw_prob = round(stat["draw_prob"] * sw + llm.get("draw_prob", stat["draw_prob"]) * lw, 4)
-    away_win_prob = round(stat["away_win_prob"] * sw + llm.get("away_win_prob", stat["away_win_prob"]) * lw, 4)
+    def _llm_prob(key: str, default: float) -> float:
+        try:
+            v = float(llm.get(key, default))
+        except (TypeError, ValueError):
+            return default
+        return min(max(v, 0.0), 1.0)
 
-    # Normalise
+    home_win_prob = stat["home_win_prob"] * sw + _llm_prob("home_win_prob", stat["home_win_prob"]) * lw
+    draw_prob = stat["draw_prob"] * sw + _llm_prob("draw_prob", stat["draw_prob"]) * lw
+    away_win_prob = stat["away_win_prob"] * sw + _llm_prob("away_win_prob", stat["away_win_prob"]) * lw
+
+    # Normalise so the three probabilities sum exactly to 1
     prob_total = home_win_prob + draw_prob + away_win_prob
     if prob_total > 0:
         home_win_prob = round(home_win_prob / prob_total, 4)
-        draw_prob = round(draw_prob / prob_total, 4)
         away_win_prob = round(away_win_prob / prob_total, 4)
+        draw_prob = round(1.0 - home_win_prob - away_win_prob, 4)
 
-    # Score: use LLM's score if it differs meaningfully, else use Poisson most-likely
-    llm_home = llm.get("predicted_home_score", stat["predicted_home_score"])
-    llm_away = llm.get("predicted_away_score", stat["predicted_away_score"])
-    # Blend: round weighted average
-    merged_home = max(0, round(stat["predicted_home_score"] * sw + llm_home * lw))
-    merged_away = max(0, round(stat["predicted_away_score"] * sw + llm_away * lw))
-
-    confidence = round(
-        stat["confidence"] * sw + llm.get("confidence_score", stat["confidence"]) * lw, 4
+    # Score: most probable scoreline CONSISTENT with the merged outcome,
+    # taken from the Poisson matrix — score, probabilities and confidence
+    # always tell the same story.
+    outcome = analysis_service.predicted_outcome(home_win_prob, draw_prob, away_win_prob)
+    merged_home, merged_away = analysis_service.most_likely_score_for_outcome(
+        stat["scoreline_matrix"], outcome
     )
+
+    confidence = analysis_service.outcome_confidence(home_win_prob, draw_prob, away_win_prob)
 
     analysis_text = llm.get(
         "analysis_text",
@@ -109,6 +115,76 @@ def predict_match(match_id: int) -> Optional[AIPrediction]:
 
     data_service.save_ai_prediction(pred)
     return pred
+
+
+# ---------------------------------------------------------------------------
+# Bulk pregeneration & refresh
+# ---------------------------------------------------------------------------
+
+def pregenerate_predictions(limit: Optional[int] = None) -> dict:
+    """
+    Generate and cache AI predictions for all upcoming scheduled matches,
+    in chronological order. Matches that already have a cached prediction
+    are skipped, so this is cheap to call repeatedly (startup, post-sync).
+    """
+    import logging
+    logger = logging.getLogger("app.services.predictor")
+
+    matches = [m for m in data_service.load_matches() if m.status.value == "scheduled"]
+    matches.sort(key=lambda m: str(m.match_date))
+    if limit:
+        matches = matches[:limit]
+
+    cached_ids = set(data_service.get_all_ai_predictions().keys())
+    generated = skipped = errors = 0
+    for m in matches:
+        if m.id in cached_ids:
+            skipped += 1
+            continue
+        try:
+            if predict_match(m.id) is not None:
+                generated += 1
+                logger.info(
+                    "Pre-generated prediction %s vs %s (match %d)",
+                    m.home_team_code, m.away_team_code, m.id,
+                )
+            else:
+                errors += 1
+        except Exception as exc:
+            errors += 1
+            logger.warning("Pregeneration failed for match %d: %s", m.id, exc)
+
+    return {"generated": generated, "cached": skipped, "errors": errors}
+
+
+def refresh_predictions_for_teams(team_codes: set[str]) -> int:
+    """
+    After real results change ELO/form, regenerate cached AI predictions
+    for every upcoming match involving the affected teams.
+    """
+    from app.services import llm_service
+
+    refreshed = 0
+    for m in data_service.load_matches():
+        if m.status.value != "scheduled":
+            continue
+        if m.home_team_code not in team_codes and m.away_team_code not in team_codes:
+            continue
+        data_service.delete_ai_prediction(m.id)
+        # Drop stale in-memory LLM cache entries for this match
+        stale = [
+            k for k in list(llm_service._cache)
+            if k.endswith(f"_{m.id}")
+            or k == f"analysis_{m.home_team_code}_{m.away_team_code}"
+        ]
+        for k in stale:
+            llm_service._cache.pop(k, None)
+        try:
+            if predict_match(m.id) is not None:
+                refreshed += 1
+        except Exception:
+            pass
+    return refreshed
 
 
 # ---------------------------------------------------------------------------

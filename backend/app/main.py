@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 async def _sync_background_loop() -> None:
-    """Polls API-Football every 5 minutes during the WC window."""
+    """Polls the ESPN scoreboard every 5 minutes during the WC window."""
     await asyncio.sleep(30)  # Let startup finish first
     while True:
         try:
@@ -36,6 +36,21 @@ async def _sync_background_loop() -> None:
         except Exception as exc:
             logger.error("Background sync error: %s", exc)
         await asyncio.sleep(300)  # 5-minute interval
+
+
+async def _pregenerate_predictions_startup() -> None:
+    """Pre-load AI predictions for all upcoming matches (skips cached ones)."""
+    from app.services import predictor
+
+    await asyncio.sleep(5)  # Let startup finish first
+    try:
+        result = await asyncio.to_thread(predictor.pregenerate_predictions)
+        logger.info(
+            "AI predictions preloaded: %d generated, %d already cached, %d errors",
+            result["generated"], result["cached"], result["errors"],
+        )
+    except Exception as exc:
+        logger.error("Prediction pregeneration failed: %s", exc)
 
 
 @asynccontextmanager
@@ -49,12 +64,14 @@ async def lifespan(app: FastAPI):
     _matches = data_service.load_matches()
     logger.info("Loaded %d teams and %d matches into cache", len(_teams), len(_matches))
 
-    # Start background sync loop (only meaningful once API key is configured)
+    # Start background sync loop and prediction pregeneration
     sync_task = asyncio.create_task(_sync_background_loop())
+    pregen_task = asyncio.create_task(_pregenerate_predictions_startup())
 
     yield  # Application runs here
 
     sync_task.cancel()
+    pregen_task.cancel()
     logger.info("Shutting down %s", settings.APP_NAME)
 
 

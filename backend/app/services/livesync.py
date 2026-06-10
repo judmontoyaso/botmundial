@@ -11,6 +11,7 @@ fuente con la que se corrigió el calendario oficial (fix_schedule.py).
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import datetime, timezone
 from typing import Optional
@@ -182,10 +183,11 @@ def _resolve_code(name: str, abbr: str = "") -> Optional[str]:
     return None
 
 
-def _process_fixture(fix: dict) -> bool:
+def _process_fixture(fix: dict) -> Optional[tuple[str, str]]:
     """
     Apply a single finished fixture (normalized ESPN dict) to our DB.
-    Returns True if the match was newly synced, False if already up-to-date.
+    Returns (home_code, away_code) if the match was newly synced,
+    None if unknown or already up-to-date.
     """
     date_str = (fix.get("date") or "")[:10]  # YYYY-MM-DD (UTC)
     home_goals = fix["home_goals"]
@@ -197,7 +199,7 @@ def _process_fixture(fix: dict) -> bool:
         logger.debug(
             "Unknown team names: '%s' vs '%s'", fix["home_name"], fix["away_name"]
         )
-        return False
+        return None
 
     # Find our matching fixture by team codes + date
     our_matches = data_service.load_matches()
@@ -210,13 +212,13 @@ def _process_fixture(fix: dict) -> bool:
     )
     if our_match is None:
         logger.debug("No local match found for %s vs %s on %s", home_code, away_code, date_str)
-        return False
+        return None
 
     # Skip if already synced with same scores
     if (our_match.status.value == "completed"
             and our_match.home_score == home_goals
             and our_match.away_score == away_goals):
-        return False
+        return None
 
     # Update match result in DB
     data_service.update_match_result(our_match.id, home_goals, away_goals)
@@ -239,7 +241,7 @@ def _process_fixture(fix: dict) -> bool:
     data_service.update_team_form_after_match(home_code, home_goals, away_goals)
     data_service.update_team_form_after_match(away_code, away_goals, home_goals)
 
-    return True
+    return home_code, away_code
 
 
 # ---------------------------------------------------------------------------
@@ -258,13 +260,29 @@ async def sync_wc_results() -> dict:
 
     synced = 0
     errors = 0
+    affected_teams: set[str] = set()
     for fix in fixtures:
         try:
-            if _process_fixture(fix):
+            codes = _process_fixture(fix)
+            if codes:
                 synced += 1
+                affected_teams.update(codes)
         except Exception as e:
             errors += 1
             logger.warning("Error processing fixture: %s", e)
+
+    # New results changed ELO/form → refresh cached AI predictions for the
+    # upcoming matches of the affected teams (off the event loop).
+    refreshed = 0
+    if affected_teams:
+        try:
+            from app.services import predictor
+            refreshed = await asyncio.to_thread(
+                predictor.refresh_predictions_for_teams, affected_teams
+            )
+            logger.info("AI predictions refreshed for %s: %d", affected_teams, refreshed)
+        except Exception as e:
+            logger.error("Prediction refresh failed: %s", e)
 
     _last_sync = datetime.now(timezone.utc)
     _last_result = {
@@ -272,6 +290,7 @@ async def sync_wc_results() -> dict:
         "synced": synced,
         "total_finished": total,
         "errors": errors,
+        "predictions_refreshed": refreshed,
         "synced_at": _last_sync.isoformat(),
     }
     logger.info("Sync done: %d/%d new, %d errors", synced, total, errors)

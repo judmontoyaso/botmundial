@@ -305,12 +305,7 @@ def _calculate_points(ph: int, pa: int, ah: int, aa: int) -> int:
 # AI predictions cache
 # ---------------------------------------------------------------------------
 
-def get_ai_prediction(match_id: int) -> Optional[AIPrediction]:
-    _require_supabase()
-    response = supabase.table("ai_predictions").select("*").eq("match_id", match_id).execute()
-    if not response.data:
-        return None
-    p = response.data[0]
+def _ai_prediction_from_row(p: dict) -> AIPrediction:
     conf = float(p["confidence_score"])
     if conf > 1.0:
         conf /= 100.0
@@ -329,6 +324,27 @@ def get_ai_prediction(match_id: int) -> Optional[AIPrediction]:
         poisson_away_lambda=float(p.get("poisson_away_lambda") or 1.2),
         scoreline_matrix=p.get("scoreline_matrix") or [],
     )
+
+
+def get_ai_prediction(match_id: int) -> Optional[AIPrediction]:
+    _require_supabase()
+    response = supabase.table("ai_predictions").select("*").eq("match_id", match_id).execute()
+    if not response.data:
+        return None
+    return _ai_prediction_from_row(response.data[0])
+
+
+def get_all_ai_predictions() -> dict[int, AIPrediction]:
+    """Bulk fetch of cached AI predictions, keyed by match_id (1 DB call)."""
+    _require_supabase()
+    response = supabase.table("ai_predictions").select("*").execute()
+    preds: dict[int, AIPrediction] = {}
+    for p in response.data or []:
+        try:
+            preds[p["match_id"]] = _ai_prediction_from_row(p)
+        except Exception:
+            continue
+    return preds
 
 
 def delete_ai_prediction(match_id: int) -> None:

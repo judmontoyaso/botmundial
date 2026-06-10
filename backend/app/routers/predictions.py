@@ -1,6 +1,6 @@
 """Router for user predictions and AI predictions."""
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
 
 from app.models.prediction import (
     AIPrediction,
@@ -65,6 +65,19 @@ async def delete_prediction(prediction_id: int):
     deleted = data_service.delete_prediction(prediction_id)
     if not deleted:
         raise HTTPException(status_code=404, detail=f"Prediction {prediction_id} not found")
+
+
+@router.post("/ai/pregenerate")
+async def pregenerate_ai_predictions(
+    background: BackgroundTasks,
+    limit: int | None = Query(default=None, ge=1, le=104),
+):
+    """
+    Pre-generate AI predictions for all upcoming matches (skips cached).
+    Runs in background; check /predictions to see results appear.
+    """
+    background.add_task(predictor_service.pregenerate_predictions, limit)
+    return {"success": True, "message": "Pregeneración de predicciones iniciada en segundo plano"}
 
 
 @router.get("/ai/{match_id}", response_model=PredictionResponse)

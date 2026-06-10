@@ -184,6 +184,50 @@ def most_likely_score(matrix: list[list[float]]) -> tuple[int, int]:
                 best_h, best_a = h, a
     return best_h, best_a
 
+
+def predicted_outcome(hw: float, dw: float, aw: float) -> str:
+    """Most probable outcome label given the three outcome probabilities."""
+    if hw >= dw and hw >= aw:
+        return "home"
+    if aw >= hw and aw >= dw:
+        return "away"
+    return "draw"
+
+
+def most_likely_score_for_outcome(
+    matrix: list[list[float]], outcome: str
+) -> tuple[int, int]:
+    """
+    Most probable scoreline CONSISTENT with the given outcome, so the
+    predicted score never contradicts the outcome probabilities
+    (e.g. probabilities favouring the home side but a drawn scoreline).
+    """
+    n = len(matrix)
+    best_p = -1.0
+    best = (1, 1) if outcome == "draw" else ((1, 0) if outcome == "home" else (0, 1))
+    for h in range(n):
+        for a in range(n):
+            if outcome == "home" and h <= a:
+                continue
+            if outcome == "away" and a <= h:
+                continue
+            if outcome == "draw" and h != a:
+                continue
+            if matrix[h][a] > best_p:
+                best_p = matrix[h][a]
+                best = (h, a)
+    return best
+
+
+def outcome_confidence(hw: float, dw: float, aw: float) -> float:
+    """
+    Confidence tied to the displayed probabilities: probability of the
+    predicted outcome plus a bonus for its margin over the runner-up.
+    A 60/25/15 match scores higher than a 40/32/28 one.
+    """
+    top, second, _ = sorted((hw, dw, aw), reverse=True)
+    return round(min(0.95, top + 0.30 * (top - second)), 4)
+
 # ---------------------------------------------------------------------------
 # Team strength
 # ---------------------------------------------------------------------------
@@ -405,10 +449,11 @@ def predict_match_statistical(
 
     matrix = build_scoreline_matrix(lh, la)
     home_win_prob, draw_prob, away_win_prob = derive_outcome_probs(matrix)
-    pred_home = max(0, round(lh))
-    pred_away = max(0, round(la))
-
-    confidence = round(max(home_win_prob, draw_prob, away_win_prob), 3)
+    # Score and confidence derived from the same matrix/probabilities so
+    # every number shown is mutually consistent.
+    outcome = predicted_outcome(home_win_prob, draw_prob, away_win_prob)
+    pred_home, pred_away = most_likely_score_for_outcome(matrix, outcome)
+    confidence = outcome_confidence(home_win_prob, draw_prob, away_win_prob)
 
     return {
         "predicted_home_score": pred_home,
@@ -492,6 +537,11 @@ def calculate_group_standings(group_letter: str) -> list[GroupStanding]:
     if not teams:
         return []
     matches = data_service.load_matches(stage="group", group=group_letter.upper())
+    # Prefer cached AI predictions so standings match the predictions page
+    try:
+        ai_preds = data_service.get_all_ai_predictions()
+    except Exception:
+        ai_preds = {}
     standings: dict[str, GroupStanding] = {
         t.code: GroupStanding(team_code=t.code, team_name=t.name) for t in teams
     }
@@ -502,6 +552,8 @@ def calculate_group_standings(group_letter: str) -> list[GroupStanding]:
             continue
         if match.home_score is not None and match.away_score is not None:
             h_goals, a_goals = match.home_score, match.away_score
+        elif (ai := ai_preds.get(match.id)) is not None:
+            h_goals, a_goals = ai.predicted_home_score, ai.predicted_away_score
         else:
             pred = predict_match_statistical(home, away, match)
             h_goals = pred["predicted_home_score"]
