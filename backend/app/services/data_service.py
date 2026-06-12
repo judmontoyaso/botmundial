@@ -68,6 +68,19 @@ def _reload_teams_cache() -> None:
     logger.info("Teams cache loaded: %d teams", len(_teams_by_code))
 
 
+def _reload_team(code: str) -> None:
+    """Refresh a single team row in the in-memory cache from Supabase."""
+    if supabase is None:
+        return
+    resp = supabase.table("teams").select("*").eq("code", code.upper()).execute()
+    if resp.data:
+        row = resp.data[0]
+        team = _team_from_row(row)
+        _teams_by_code[team.code] = team
+        if row.get("id") is not None:
+            _team_id_to_code[row["id"]] = team.code
+
+
 def _require_supabase() -> None:
     if supabase is None:
         raise RuntimeError("Supabase is not configured. Set SUPABASE_URL and SUPABASE_KEY in .env")
@@ -105,8 +118,16 @@ def load_teams() -> list[Team]:
 
 
 def get_team_by_code(code: str) -> Optional[Team]:
+    if not code:
+        return None
     _ensure_teams_loaded()
-    return _teams_by_code.get(code.upper())
+    code = code.upper()
+    team = _teams_by_code.get(code)
+    if team is None:
+        # Self-heal: the entry may have been evicted after a stats update
+        _reload_team(code)
+        team = _teams_by_code.get(code)
+    return team
 
 
 def get_teams_by_group(letter: str) -> list[Team]:
@@ -464,8 +485,8 @@ def update_team_form_after_match(code: str, goals_for: int, goals_against: int) 
     stats["goals_conceded_avg"] = round(total_ga / n, 2)
 
     supabase.table("teams").update({"stats": stats}).eq("code", code).execute()
-    if code in _teams_by_code:
-        del _teams_by_code[code]
+    # Reload (never evict) so the cache stays complete after stats updates
+    _reload_team(code)
     logger.info("Form updated: %s result=%s window=%s", code, result, window)
 
 

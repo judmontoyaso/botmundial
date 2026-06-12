@@ -6,17 +6,31 @@ import {
   Calendar, Clock, Trophy, Target, Brain,
   ChevronRight, Sparkles, GitBranch, Zap, Activity,
 } from 'lucide-react';
-import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer,
-} from 'recharts';
 import Link from 'next/link';
 import StatsCard from '@/components/ui/StatsCard';
 import FlagImg from '@/components/ui/FlagImg';
 import LoadingBall from '@/components/ui/LoadingBall';
 import { api } from '@/lib/api';
-import { matchLocalDate, matchLocalTime } from '@/lib/datetime';
+import { matchLocalDate, matchLocalTime, matchLocalDateLabel } from '@/lib/datetime';
 import type { Match } from '@/types';
+
+const WC_START = new Date('2026-06-11T18:00:00Z');
+
+function tournamentStarted() {
+  return Date.now() >= WC_START.getTime();
+}
+
+function tournamentDay() {
+  return Math.max(1, Math.floor((Date.now() - WC_START.getTime()) / 86400000) + 1);
+}
+
+/** Polla scoring: 3 = marcador exacto, 1 = resultado correcto, 0 = fallo. */
+function pollaPoints(ph: number, pa: number, ah: number, aa: number): number {
+  if (ph === ah && pa === aa) return 3;
+  const pred = ph > pa ? 1 : ph < pa ? -1 : 0;
+  const actual = ah > aa ? 1 : ah < aa ? -1 : 0;
+  return pred === actual ? 1 : 0;
+}
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -27,10 +41,9 @@ const fadeUp = {
   show:   { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' as const } },
 };
 
-function CountdownHero() {
+function CountdownHero({ target }: { target: Date }) {
   const [t, setT] = useState({ d: 0, h: 0, m: 0, s: 0 });
   useEffect(() => {
-    const target = new Date('2026-06-11T18:00:00Z');
     const tick = () => {
       const diff = target.getTime() - Date.now();
       if (diff > 0) setT({
@@ -39,11 +52,12 @@ function CountdownHero() {
         m: Math.floor((diff % 3600000) / 60000),
         s: Math.floor((diff % 60000) / 1000),
       });
+      else setT({ d: 0, h: 0, m: 0, s: 0 });
     };
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [target]);
 
   return (
     <div className="flex items-center gap-3 sm:gap-4">
@@ -101,6 +115,9 @@ function AIInsight({ text, loading }: { text: string; loading: boolean }) {
 export default function DashboardPage() {
   const [loading, setLoading]         = useState(true);
   const [upcoming, setUpcoming]       = useState<Match[]>([]);
+  const [results, setResults]         = useState<any[]>([]);
+  const [playedCount, setPlayed]      = useState(0);
+  const [aiByMatch, setAiByMatch]     = useState<Record<number, any>>({});
   const [groups, setGroups]           = useState<{ group: string; teams: any[] }[]>([]);
   const [stats, setStats]             = useState<any>(null);
   const [insight, setInsight]         = useState('');
@@ -109,58 +126,104 @@ export default function DashboardPage() {
 
   useEffect(() => {
     (async () => {
-      try {
-        const [matchesData, statsData, gA, gC, gE] = await Promise.all([
-          api.getUpcomingMatches(),
-          api.getPredictionStats(),
-          api.getGroupAnalysis('A'),
-          api.getGroupAnalysis('C'),
-          api.getGroupAnalysis('E'),
-        ]);
+      // allSettled: si un endpoint falla, el resto del dashboard sigue funcionando
+      const [matchesR, statsR, gAR, gCR, gER, completedR] = await Promise.allSettled([
+        api.getUpcomingMatches(),
+        api.getPredictionStats(),
+        api.getGroupAnalysis('A'),
+        api.getGroupAnalysis('C'),
+        api.getGroupAnalysis('E'),
+        api.getMatches({ status: 'completed' }),
+      ]);
 
-        setUpcoming(
-          (matchesData as any[]).map(item => ({
-            ...item.match,
-            home_team: item.match.home_team_code,
-            away_team: item.match.away_team_code,
-            home_team_name: item.home_team_name,
-            away_team_name: item.away_team_name,
-            home_flag: item.home_team_flag,
-            away_flag: item.away_team_flag,
-            home_flag_url: item.home_team_flag_url ?? '',
-            away_flag_url: item.away_team_flag_url ?? '',
-            date: matchLocalDate(item.match.match_date),
-            time: matchLocalTime(item.match.match_date),
-          })).slice(0, 5)
+      const mapMatch = (item: any) => ({
+        ...item.match,
+        home_team: item.match.home_team_code,
+        away_team: item.match.away_team_code,
+        home_team_name: item.home_team_name,
+        away_team_name: item.away_team_name,
+        home_flag: item.home_team_flag,
+        away_flag: item.away_team_flag,
+        home_flag_url: item.home_team_flag_url ?? '',
+        away_flag_url: item.away_team_flag_url ?? '',
+        date: matchLocalDate(item.match.match_date),
+        time: matchLocalTime(item.match.match_date),
+      });
+
+      if (matchesR.status === 'fulfilled') {
+        setUpcoming((matchesR.value as any[]).map(mapMatch).slice(0, 5));
+      }
+      if (statsR.status === 'fulfilled') setStats(statsR.value);
+
+      let recent: any[] = [];
+      if (completedR.status === 'fulfilled') {
+        const completed = (completedR.value as any[]).map(mapMatch);
+        setPlayed(completed.length);
+        recent = completed
+          .sort((a, b) => String(b.match_date).localeCompare(String(a.match_date)))
+          .slice(0, 5);
+        setResults(recent);
+      }
+
+      const buildGroups = (letter: string, data: any) => ({
+        group: letter,
+        teams: data.predicted_standings.map((s: any) => ({
+          ...s,
+          flag: data.teams.find((t: any) => t.code === s.team_code)?.flag_emoji ?? '🏳️',
+        })),
+      });
+      setGroups(
+        ([['A', gAR], ['C', gCR], ['E', gER]] as const)
+          .filter(([, r]) => r.status === 'fulfilled')
+          .map(([letter, r]) => buildGroups(letter, (r as PromiseFulfilledResult<any>).value))
+      );
+
+      setLoading(false);
+
+      // Predicciones IA cacheadas de los resultados recientes (sin LLM) para
+      // mostrar aciertos del modelo + construir el insight del día.
+      const statsCalls = await Promise.allSettled(recent.map(m => api.getMatchStats(m.id)));
+      const aiMap: Record<number, any> = {};
+      statsCalls.forEach((r, i) => {
+        const ai = r.status === 'fulfilled' ? (r.value as any)?.ai_prediction : null;
+        if (ai) aiMap[recent[i].id] = ai;
+      });
+      setAiByMatch(aiMap);
+
+      const scored = recent.filter(m => aiMap[m.id]);
+      const outcomeHits = scored.filter(m => pollaPoints(
+        aiMap[m.id].predicted_home_score, aiMap[m.id].predicted_away_score,
+        m.home_score, m.away_score,
+      ) >= 1).length;
+      const exactHits = scored.filter(m => pollaPoints(
+        aiMap[m.id].predicted_home_score, aiMap[m.id].predicted_away_score,
+        m.home_score, m.away_score,
+      ) === 3).length;
+
+      if (scored.length > 0) {
+        setInsight(
+          `¡El Mundial 2026 está en marcha! El modelo ha acertado el resultado en ${outcomeHits} de ${scored.length} partidos jugados` +
+          (exactHits > 0 ? `, incluyendo ${exactHits} marcador${exactHits > 1 ? 'es' : ''} exacto${exactHits > 1 ? 's' : ''}` : '') +
+          `. Las probabilidades se recalculan automáticamente con cada resultado: ELO, forma y tablas de grupo ya reflejan lo jugado.`
         );
-        setStats(statsData);
-
-        const buildGroups = (letter: string, data: any) => ({
-          group: letter,
-          teams: data.predicted_standings.map((s: any) => ({
-            ...s,
-            flag: data.teams.find((t: any) => t.code === s.team_code)?.flag_emoji ?? '🏳️',
-          })),
-        });
-        setGroups([buildGroups('A', gA), buildGroups('C', gC), buildGroups('E', gE)]);
-
+      } else {
+        const gA = gAR.status === 'fulfilled' ? (gAR as PromiseFulfilledResult<any>).value : null;
         const top = gA?.predicted_standings?.slice(0, 3).map((t: any) => t.team_name).join(', ') ?? '';
         setInsight(top
-          ? `Análisis del Grupo A: ${top} lideran según el modelo Poisson + ELO. Argentina y Francia son los favoritos globales al título. La ventaja de local de México y Estados Unidos será determinante en fase de grupos.`
-          : 'El modelo estadístico analiza 104 partidos usando Poisson, ELO y xG histórico. Argentina y Francia encabezan las probabilidades de campeonato con ventajas significativas en sus grupos.'
+          ? `Análisis del Grupo A: ${top} lideran según el modelo Poisson + ELO. El modelo recalcula probabilidades con cada resultado real del torneo.`
+          : 'El modelo estadístico analiza el torneo usando Poisson, ELO y xG histórico, y se actualiza automáticamente con cada resultado real.'
         );
-        setIL(false);
-
-        api.getTournamentSimulation(1000)
-          .then((sim: any) => setFavorites((sim.teams ?? []).slice(0, 5)))
-          .catch(() => {});
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
       }
+      setIL(false);
+
+      api.getTournamentSimulation(1000)
+        .then((sim: any) => setFavorites((sim.teams ?? []).slice(0, 5)))
+        .catch(() => {});
     })();
   }, []);
+
+  const nextMatch: any = upcoming[0] ?? null;
+  const started = tournamentStarted();
 
   if (loading) return (
     <div className="max-w-7xl mx-auto h-[60vh] flex items-center justify-center">
@@ -193,7 +256,7 @@ export default function DashboardPage() {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-3">
               <span className="badge badge-gold">
-                <Activity className="w-2.5 h-2.5" /> Sistema activo
+                <Activity className="w-2.5 h-2.5" /> {started ? `Mundial en curso · Día ${tournamentDay()}` : 'Sistema activo'}
               </span>
               <span className="badge badge-purple">
                 <Zap className="w-2.5 h-2.5" /> IA en línea
@@ -226,17 +289,29 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex flex-col items-center gap-3">
-            <p className="text-[10px] text-text-muted uppercase tracking-[0.18em]">Inicio del torneo</p>
-            <CountdownHero />
-            <p className="text-xs text-text-secondary">11 Jun 2026 · Ciudad de México</p>
+            {started && nextMatch ? (
+              <>
+                <p className="text-[10px] text-text-muted uppercase tracking-[0.18em]">Próximo partido</p>
+                <CountdownHero target={new Date(nextMatch.match_date)} />
+                <p className="text-xs text-text-secondary">
+                  {nextMatch.home_team_name} vs {nextMatch.away_team_name} · {matchLocalDateLabel(nextMatch.match_date)}, {nextMatch.time}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-[10px] text-text-muted uppercase tracking-[0.18em]">{started ? 'Mundial en curso' : 'Inicio del torneo'}</p>
+                <CountdownHero target={WC_START} />
+                <p className="text-xs text-text-secondary">11 Jun 2026 · Ciudad de México</p>
+              </>
+            )}
           </div>
         </div>
       </motion.div>
 
       {/* ── STATS CARDS ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatsCard icon={Calendar} label="Total Partidos"  value={104}                              color="blue"  delay={0.05} />
-        <StatsCard icon={Clock}    label="Próximo Partido" value={<CountdownClockMini />}           color="amber" delay={0.10} />
+        <StatsCard icon={Calendar} label="Partidos Jugados" value={`${playedCount}/104`}            color="blue"  delay={0.05} />
+        <StatsCard icon={Clock}    label="Próximo Partido" value={<CountdownClockMini target={nextMatch ? new Date(nextMatch.match_date) : null} />} color="amber" delay={0.10} />
         <StatsCard icon={Trophy}   label="Mis Puntos"      value={stats?.total_points ?? 0}         color="gold"  delay={0.15} trend={stats?.total_points ? { value: 12, positive: true } : undefined} />
         <StatsCard icon={Target}   label="Precisión"       value={`${stats?.accuracy_pct ?? 0}%`}   color="green" delay={0.20} />
       </div>
@@ -287,33 +362,62 @@ export default function DashboardPage() {
           </div>
         </motion.div>
 
-        {/* Performance chart */}
+        {/* Recent results + model performance */}
         <motion.div variants={fadeUp} className="card-premium rounded-2xl p-6">
-          <h2 className="section-title mb-5">
-            <Trophy className="w-4.5 h-4.5" />
-            Mi Rendimiento
-          </h2>
-          <div className="h-52">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={[]}>
-                <defs>
-                  <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="#e0b44a" stopOpacity={0.25} />
-                    <stop offset="95%" stopColor="#e0b44a" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(120,120,160,0.08)" />
-                <XAxis dataKey="matchday" tick={{ fill: '#7a7a95', fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: '#7a7a95', fontSize: 11 }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ background: 'rgba(12,12,22,0.95)', border: '1px solid rgba(224,180,74,0.2)', borderRadius: 12, color: '#f1f1f7', fontSize: 12 }} />
-                <Area type="monotone" dataKey="cumulative" stroke="#e0b44a" strokeWidth={2} fill="url(#goldGrad)" name="Puntos" />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="section-title">
+              <Activity className="w-4.5 h-4.5" />
+              Resultados Recientes
+            </h2>
+            <Link href="/matches" className="flex items-center gap-1 text-xs text-accent-gold/80 hover:text-accent-gold transition-colors">
+              Ver todos <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
-          {stats?.total_predictions === 0 && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none">
-              <Trophy className="w-8 h-8 text-text-muted/30" />
-              <p className="text-xs text-text-muted">Tus puntos aparecerán aquí cuando empiece el torneo</p>
+
+          {results.length === 0 ? (
+            <p className="text-xs text-text-muted">Aún no hay partidos finalizados.</p>
+          ) : (
+            <div className="space-y-2">
+              {results.map((m, i) => {
+                const ai = aiByMatch[m.id];
+                const pts = ai ? pollaPoints(ai.predicted_home_score, ai.predicted_away_score, m.home_score, m.away_score) : null;
+                return (
+                  <motion.div
+                    key={m.id}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.25 + i * 0.07 }}
+                    className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl"
+                    style={{ background: 'rgba(255,255,255,0.025)' }}
+                  >
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <FlagImg url={m.home_flag_url} emoji={m.home_flag} teamCode={m.home_team} name={m.home_team_name} size="sm" />
+                      <span className="text-xs font-medium text-text-primary truncate">{m.home_team_name}</span>
+                      <span className="text-xs font-bold text-accent-gold mx-1 flex-shrink-0 tabular-nums">
+                        {m.home_score} - {m.away_score}
+                      </span>
+                      <span className="text-xs font-medium text-text-primary truncate">{m.away_team_name}</span>
+                      <FlagImg url={m.away_flag_url} emoji={m.away_flag} teamCode={m.away_team} name={m.away_team_name} size="sm" />
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                      {pts !== null && (
+                        <span
+                          className="px-2 py-0.5 rounded-md text-[10px] font-semibold"
+                          style={pts === 3
+                            ? { background: 'rgba(224,180,74,0.12)', border: '1px solid rgba(224,180,74,0.25)', color: '#f0c060' }
+                            : pts === 1
+                              ? { background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', color: '#4ade80' }
+                              : { background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171' }}
+                          title={`La IA predijo ${ai.predicted_home_score}-${ai.predicted_away_score}`}
+                        >
+                          {pts === 3 ? 'IA: exacto' : pts === 1 ? 'IA: acertó' : 'IA: falló'}
+                        </span>
+                      )}
+                      <span className="text-[10px] text-text-muted hidden sm:block">{m.date}</span>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           )}
         </motion.div>
@@ -458,10 +562,10 @@ export default function DashboardPage() {
   );
 }
 
-function CountdownClockMini() {
+function CountdownClockMini({ target }: { target: Date | null }) {
   const [t, setT] = useState({ d: 0, h: 0, m: 0, s: 0 });
   useEffect(() => {
-    const target = new Date('2026-06-11T18:00:00Z');
+    if (!target) return;
     const tick = () => {
       const diff = target.getTime() - Date.now();
       if (diff > 0) setT({
@@ -470,11 +574,13 @@ function CountdownClockMini() {
         m: Math.floor((diff % 3600000) / 60000),
         s: Math.floor((diff % 60000) / 1000),
       });
+      else setT({ d: 0, h: 0, m: 0, s: 0 });
     };
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [target?.getTime()]);
+  if (!target) return <span className="font-mono text-3xl stat-value">—</span>;
   return (
     <span className="font-mono text-3xl stat-value">
       {t.d}<span className="text-text-muted text-lg">d </span>
