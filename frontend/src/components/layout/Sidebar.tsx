@@ -16,12 +16,14 @@ import {
   GitBranch,
   Zap,
   FlaskConical,
+  Activity,
 } from 'lucide-react';
 
 const navItems = [
   { href: '/',           label: 'Dashboard',       icon: LayoutDashboard, desc: 'Resumen general' },
   { href: '/matches',    label: 'Partidos',         icon: Calendar,        desc: 'Programación' },
   { href: '/predictions',label: 'Predicciones IA',  icon: Brain,           desc: 'Modelo Poisson' },
+  { href: '/accuracy',   label: 'Efectividad IA',   icon: Activity,        desc: 'Aciertos reales' },
   { href: '/groups',     label: 'Grupos',           icon: Users,           desc: 'Fase de grupos' },
   { href: '/bracket',    label: 'Simulación',       icon: GitBranch,       desc: 'Monte Carlo' },
   { href: '/tracker',    label: 'Mi Polla',         icon: Target,          desc: 'Mis apuestas' },

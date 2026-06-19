@@ -1,5 +1,7 @@
 """Router for user predictions and AI predictions."""
 
+import time
+
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
 
 from app.models.prediction import (
@@ -9,10 +11,15 @@ from app.models.prediction import (
     PredictionResponse,
     PredictionStats,
 )
+from app.services import accuracy as accuracy_service
 from app.services import data_service
 from app.services import predictor as predictor_service
 
 router = APIRouter(prefix="/predictions", tags=["Predictions"])
+
+# Short-TTL cache for the AI accuracy report — recomputed as live results arrive.
+_accuracy_cache: dict = {}
+_ACCURACY_TTL = 900  # 15 minutes
 
 
 @router.get("", response_model=PredictionResponse)
@@ -65,6 +72,22 @@ async def delete_prediction(prediction_id: int):
     deleted = data_service.delete_prediction(prediction_id)
     if not deleted:
         raise HTTPException(status_code=404, detail=f"Prediction {prediction_id} not found")
+
+
+@router.get("/ai/accuracy")
+async def ai_accuracy(refresh: bool = Query(default=False, description="Bypass the cache")):
+    """
+    Effectiveness of the AI predictions against already-played matches:
+    outcome accuracy, exact-score hits, polla points, calibration and a
+    match-by-match breakdown. Cached for 15 min; updates as real results arrive.
+    """
+    cached = _accuracy_cache.get("data")
+    if cached and not refresh and (time.time() - cached["ts"]) < _ACCURACY_TTL:
+        return {"success": True, **cached["data"]}
+
+    data = accuracy_service.compute_ai_accuracy()
+    _accuracy_cache["data"] = {"ts": time.time(), "data": data}
+    return {"success": True, **data}
 
 
 @router.post("/ai/pregenerate")

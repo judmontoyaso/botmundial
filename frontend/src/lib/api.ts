@@ -76,6 +76,9 @@ export const api = {
   // Backtest
   getQatar2022Backtest: () => fetchJSON<any>('/analysis/backtest/qatar2022'),
 
+  // AI effectiveness (past predictions vs real results)
+  getAIAccuracy: (refresh = false) => fetchJSON<any>(`/predictions/ai/accuracy${refresh ? '?refresh=true' : ''}`),
+
   // Player absences
   getTeamAbsences: (code: string) => fetchJSON<any>(`/teams/${code}/absences`),
   addTeamAbsence: (code: string, data: { player_name: string; position?: string; importance?: number; reason?: string }) =>
