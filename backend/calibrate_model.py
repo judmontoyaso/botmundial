@@ -41,6 +41,7 @@ MEAN_XG_FOR    = 1.30
 MEAN_XG_AGAINST = 1.10
 MEAN_GOALS     = 1.20
 DC_RHO         = -0.10  # Dixon-Coles low-score correction
+DRAW_BOOST     = 1.35   # must match analysis._DRAW_BOOST so calibration reflects the real model
 
 # ---------------------------------------------------------------------------
 # Funciones Poisson (auto-contenidas, no dependen de módulos del modelo)
@@ -60,6 +61,9 @@ def _build_matrix(lh: float, la: float, max_g: int = 5) -> list[list[float]]:
     m[1][0] *= max(0.0, 1 + la * rho)
     m[0][1] *= max(0.0, 1 + lh * rho)
     m[1][1] *= max(0.0, 1 - rho)
+    # Draw boost on equal-score cells (matches analysis.build_scoreline_matrix)
+    for g in range(n):
+        m[g][g] *= DRAW_BOOST
     total = sum(m[h][a] for h in range(n) for a in range(n))
     if total > 0:
         m = [[m[h][a] / total for a in range(n)] for h in range(n)]
