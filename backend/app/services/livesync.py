@@ -39,6 +39,20 @@ _WC_DATE_RANGES = [
 ]
 _ELO_K = 60             # High K-factor for World Cup (most important competition)
 
+# ESPN season.slug → our MatchStage value. Group stage is already seeded; the
+# knockout slugs below are what the fixture sync inserts as teams get decided.
+_STAGE_BY_SLUG: dict[str, str] = {
+    "round-of-32": "round_of_32",
+    "round-of-16": "round_of_16",
+    "quarterfinals": "quarterfinal",
+    "semifinals": "semifinal",
+    "3rd-place-match": "third_place",
+    "final": "final",
+}
+# Canonical knockout order → used to assign stable match_numbers (73..104).
+_STAGE_ORDER = ["round_of_32", "round_of_16", "quarterfinal", "semifinal", "third_place", "final"]
+_KO_BASE_NUMBER = 73    # group stage occupies match_number 1..72
+
 # State
 _last_sync: Optional[datetime] = None
 _last_result: dict = {}
@@ -112,18 +126,14 @@ def _elo_update(
 # ESPN fetcher
 # ---------------------------------------------------------------------------
 
-async def _fetch_finished_fixtures() -> list[dict]:
-    """
-    Fetch finished WC2026 fixtures from the ESPN public scoreboard.
-    Returns normalized dicts: {home_name, away_name, home_abbr, away_abbr,
-    home_goals, away_goals, date}.
-    """
+async def _fetch_events() -> list[dict]:
+    """Fetch every WC2026 event (all stages) from the ESPN public scoreboard."""
     events: dict[str, dict] = {}
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
             for rng in _WC_DATE_RANGES:
                 resp = await client.get(
-                    _ESPN_SCOREBOARD, params={"dates": rng, "limit": 200}
+                    _ESPN_SCOREBOARD, params={"dates": rng, "limit": 300}
                 )
                 resp.raise_for_status()
                 for e in resp.json().get("events", []):
@@ -134,9 +144,16 @@ async def _fetch_finished_fixtures() -> list[dict]:
     except Exception as e:
         logger.error("ESPN fetch failed: %s", e)
         return []
+    return list(events.values())
 
+
+def _finished_from_events(events: list[dict]) -> list[dict]:
+    """
+    Normalize finished fixtures from raw ESPN events: {home_name, away_name,
+    home_abbr, away_abbr, home_goals, away_goals, date}.
+    """
     finished = []
-    for e in events.values():
+    for e in events:
         status_type = (e.get("status") or {}).get("type", {})
         if not status_type.get("completed"):
             continue
@@ -245,17 +262,101 @@ def _process_fixture(fix: dict) -> Optional[tuple[str, str]]:
 
 
 # ---------------------------------------------------------------------------
+# Knockout fixture sync — creates bracket matches as teams get decided
+# ---------------------------------------------------------------------------
+
+def _normalize_date(date: str) -> str:
+    """ESPN dates come as '2026-07-04T17:00Z' (no seconds); add them so the
+    value matches the format already stored for the group stage."""
+    return date.replace("Z", ":00Z") if len(date) == 17 else date
+
+
+def sync_knockout_fixtures(events: list[dict]) -> dict:
+    """
+    Insert / update knockout-stage fixtures (round_of_32 … final) from ESPN.
+
+    Each bracket slot gets a stable match_number (73..104) derived from its
+    fixed kickoff order, so re-runs are idempotent. A fixture is only written
+    once BOTH of its teams resolve to real squads — slots still showing
+    placeholders ("Group L Winner", "Round of 32 1 Winner", a third-place
+    spot) are skipped until the relevant groups finish, then picked up on a
+    later sync. Existing results are never overwritten.
+    """
+    # Collect knockout events with their stage, ignoring the group stage.
+    ko: list[tuple[str, dict]] = []
+    for e in events:
+        slug = (e.get("season") or {}).get("slug")
+        stage = _STAGE_BY_SLUG.get(slug)
+        if stage:
+            ko.append((stage, e))
+
+    # Stable slot order → stable match_number assignment.
+    ko.sort(key=lambda se: (_STAGE_ORDER.index(se[0]), se[1].get("date", ""), str(se[1].get("id", ""))))
+
+    inserted = updated = unresolved = 0
+    for idx, (stage, e) in enumerate(ko):
+        match_number = _KO_BASE_NUMBER + idx
+        comp = (e.get("competitions") or [{}])[0]
+        sides = {c.get("homeAway"): c for c in comp.get("competitors", [])}
+        home, away = sides.get("home"), sides.get("away")
+        if not home or not away:
+            continue
+        home_code = _resolve_code(home["team"].get("displayName", ""), home["team"].get("abbreviation", ""))
+        away_code = _resolve_code(away["team"].get("displayName", ""), away["team"].get("abbreviation", ""))
+        if not home_code or not away_code:
+            unresolved += 1
+            continue
+        venue = comp.get("venue") or {}
+        city = ((venue.get("address") or {}).get("city") or "").split(",")[0].strip()
+        try:
+            outcome = data_service.upsert_knockout_match(
+                match_number=match_number,
+                stage=stage,
+                home_code=home_code,
+                away_code=away_code,
+                match_date=_normalize_date(e.get("date", "")),
+                venue=venue.get("fullName") or "",
+                city=city,
+            )
+        except Exception as exc:
+            logger.warning("Knockout upsert failed (#%d %s): %s", match_number, stage, exc)
+            continue
+        if outcome == "inserted":
+            inserted += 1
+        elif outcome == "updated":
+            updated += 1
+
+    if inserted or unresolved:
+        logger.info(
+            "Knockout fixtures: %d new, %d updated, %d slots still undecided",
+            inserted, updated, unresolved,
+        )
+    return {"inserted": inserted, "updated": updated, "unresolved": unresolved, "ko_total": len(ko)}
+
+
+# ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 
 async def sync_wc_results() -> dict:
     """
-    Fetch all finished WC2026 results and apply any new ones to the DB.
-    Called periodically by the background task and manually via /api/sync/run.
+    Fetch all WC2026 events and apply any new results, plus create any
+    knockout fixtures whose teams are now decided. Called periodically by the
+    background task and manually via /api/sync/run.
     """
     global _last_sync, _last_result
 
-    fixtures = await _fetch_finished_fixtures()
+    events = await _fetch_events()
+
+    # 1. Create / update knockout fixtures as teams get decided.
+    ko = {"inserted": 0, "updated": 0, "unresolved": 0}
+    try:
+        ko = await asyncio.to_thread(sync_knockout_fixtures, events)
+    except Exception as e:
+        logger.error("Knockout fixture sync failed: %s", e)
+
+    # 2. Apply finished results.
+    fixtures = _finished_from_events(events)
     total = len(fixtures)
 
     synced = 0
@@ -284,6 +385,17 @@ async def sync_wc_results() -> dict:
         except Exception as e:
             logger.error("Prediction refresh failed: %s", e)
 
+    # Newly-created knockout fixtures have no prediction yet → pregenerate.
+    pregenerated = 0
+    if ko.get("inserted"):
+        try:
+            from app.services import predictor
+            result = await asyncio.to_thread(predictor.pregenerate_predictions)
+            pregenerated = result.get("generated", 0)
+            logger.info("Knockout predictions pregenerated: %d", pregenerated)
+        except Exception as e:
+            logger.error("Knockout pregeneration failed: %s", e)
+
     _last_sync = datetime.now(timezone.utc)
     _last_result = {
         "success": True,
@@ -291,9 +403,15 @@ async def sync_wc_results() -> dict:
         "total_finished": total,
         "errors": errors,
         "predictions_refreshed": refreshed,
+        "knockout_new": ko.get("inserted", 0),
+        "knockout_pending": ko.get("unresolved", 0),
+        "knockout_pregenerated": pregenerated,
         "synced_at": _last_sync.isoformat(),
     }
-    logger.info("Sync done: %d/%d new, %d errors", synced, total, errors)
+    logger.info(
+        "Sync done: %d/%d results, %d new KO fixtures (%d undecided), %d errors",
+        synced, total, ko.get("inserted", 0), ko.get("unresolved", 0), errors,
+    )
     return _last_result
 
 

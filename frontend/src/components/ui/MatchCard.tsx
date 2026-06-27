@@ -13,6 +13,16 @@ interface MatchCardProps {
   delay?: number;
 }
 
+const STAGE_LABELS: Record<string, string> = {
+  group: 'Fase de Grupos',
+  round_of_32: 'Dieciseisavos',
+  round_of_16: 'Octavos de Final',
+  quarterfinal: 'Cuartos de Final',
+  semifinal: 'Semifinal',
+  third_place: 'Tercer Lugar',
+  final: 'Final',
+};
+
 function StatusBadge({ status }: { status: Match['status'] }) {
   const cfg: Record<string, { label: string; cls: string; dot: string }> = {
     scheduled: { label: 'Programado', cls: 'bg-info/10 text-info border-info/20',           dot: 'bg-info' },
@@ -77,7 +87,9 @@ export default function MatchCard({ match, compact = false, onClick, delay = 0 }
               Grupo {match.group}
             </span>
           ) : (
-            <span className="text-[10px] text-text-muted uppercase tracking-wider">{match.stage}</span>
+            <span className="text-[10px] font-bold text-accent-purple/80 uppercase tracking-[0.1em] bg-accent-purple/8 px-2 py-0.5 rounded-md border border-accent-purple/15">
+              {STAGE_LABELS[match.stage] ?? match.stage}
+            </span>
           )}
           <StatusBadge status={match.status} />
         </div>

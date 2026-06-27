@@ -224,6 +224,53 @@ def enrich_match(match: Match) -> MatchWithTeams:
     )
 
 
+def upsert_knockout_match(
+    match_number: int,
+    stage: str,
+    home_code: str,
+    away_code: str,
+    match_date: str,
+    venue: str = "",
+    city: str = "",
+) -> str:
+    """
+    Create or update a knockout-stage fixture (round_of_32 … final) once both
+    teams are known. Keyed by match_number (group stage occupies 1..72, the 32
+    knockout slots take 73..104).
+
+    Returns "inserted" for a brand-new fixture, "updated" if the row already
+    existed, or "" if either team code is unknown. Never touches an existing
+    row's status / score, so a result already synced is preserved.
+    """
+    _require_supabase()
+    _ensure_teams_loaded()
+    home = _teams_by_code.get(home_code.upper())
+    away = _teams_by_code.get(away_code.upper())
+    if not home or not away:
+        return ""
+
+    payload = {
+        "stage": stage,
+        "home_team_id": home.id,
+        "away_team_id": away.id,
+        "match_date": match_date,
+        "venue": venue,
+        "city": city,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    existing = supabase.table("matches").select("id").eq("match_number", match_number).execute()
+    if existing.data:
+        supabase.table("matches").update(payload).eq("match_number", match_number).execute()
+        return "updated"
+
+    payload["match_number"] = match_number
+    payload["status"] = "scheduled"
+    payload["group_letter"] = None
+    supabase.table("matches").insert(payload).execute()
+    logger.info("Knockout fixture created: #%d %s %s vs %s", match_number, stage, home_code, away_code)
+    return "inserted"
+
+
 def update_match_result(match_id: int, home_score: int, away_score: int) -> Optional[Match]:
     _require_supabase()
     match = get_match_by_id(match_id)
