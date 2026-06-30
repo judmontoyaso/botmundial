@@ -367,6 +367,19 @@ def _compute_lambdas(
     aa = away.stats.xg_for_avg / _MEAN_XG_FOR
     ad = away.stats.xg_against_avg / _MEAN_XG_AGAINST
 
+    # Blend pre-tournament xG with actual WC performance (35% weight).
+    # goals_scored/conceded_avg is updated live by livesync after each match.
+    # Guard: only apply if the team has played WC games (wins+draws+losses > 0).
+    _WC_BLEND = 0.35
+    home_wc_games = home.stats.wins_last_10 + home.stats.draws_last_10 + home.stats.losses_last_10
+    away_wc_games = away.stats.wins_last_10 + away.stats.draws_last_10 + away.stats.losses_last_10
+    if home_wc_games > 0:
+        ha = ha * (1 - _WC_BLEND) + (home.stats.goals_scored_avg / _MEAN_GOALS) * _WC_BLEND
+        hd = hd * (1 - _WC_BLEND) + (home.stats.goals_conceded_avg / _MEAN_GOALS) * _WC_BLEND
+    if away_wc_games > 0:
+        aa = aa * (1 - _WC_BLEND) + (away.stats.goals_scored_avg / _MEAN_GOALS) * _WC_BLEND
+        ad = ad * (1 - _WC_BLEND) + (away.stats.goals_conceded_avg / _MEAN_GOALS) * _WC_BLEND
+
     lh = ha * ad * _MEAN_GOALS * _HOME_FACTOR
     la = aa * hd * _MEAN_GOALS
 
